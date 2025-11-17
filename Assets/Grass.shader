@@ -17,6 +17,8 @@ Shader "Roystan/Grass"
 		_WindStrength("Wind Strength", Float) = 1
 		_BladeForward("Blade Forward Amount", Float) = 0.38
 		_BladeCurve("Blade Curvature Amount", Range(1, 4)) = 2	
+		_InteractorRadius("Interactor Radius", Float) = 0.3
+		_InteractorStrength("Interactor Strength", Float) = 1
     }
 
 	CGINCLUDE
@@ -64,6 +66,9 @@ Shader "Roystan/Grass"
 	float _WindStrength;
 	float _BladeForward;
 	float _BladeCurve;
+	float _InteractorRadius;
+	float _InteractorStrength;
+	uniform float3 _PositionMoving;  // 交互器世界位置
 
 	//和曲面细分冲突，这里可以注释掉
 	// struct vertexInput
@@ -133,6 +138,16 @@ Shader "Roystan/Grass"
 	{
 		float3 pos = IN[0].vertex;
 
+		//与物体交互
+		// Interactivity
+		float dis = distance(_PositionMoving, pos);
+		float radius = 1 - saturate(dis / _InteractorRadius);
+		// in world radius based on objects interaction radius
+		float3 sphereDisp = pos - _PositionMoving; // position comparison
+		sphereDisp *= radius; // position multiplied by radius for falloff
+		// increase strength
+		sphereDisp = clamp(sphereDisp.xyz * _InteractorStrength, -0.8, 0.8);
+
 		//wind
 		float2 uv = pos.xz * _WindDistortionMap_ST.xy + _WindDistortionMap_ST.zw + _WindFrequency * _Time.y;
 		float2 windSample = (tex2Dlod(_WindDistortionMap, float4(uv, 0, 0)).xy * 2 - 1) * _WindStrength;
@@ -176,6 +191,7 @@ Shader "Roystan/Grass"
 			float segmentForward = pow(t, _BladeCurve) * forward;
 			//底部顶点使用transformationFacingMatrix
 			float3x3 transfromMatrix = i == 0? transformationFacingMatrix : TransformMatrix;
+			pos = i == 0? pos : pos + sphereDisp * t;
 			triStream.Append(GenerateGrassVertex(pos, segmentWidth, segmentHeight, segmentForward, float2(0,t), transfromMatrix));
 			triStream.Append(GenerateGrassVertex(pos, -segmentWidth, segmentHeight, segmentForward, float2(1,t), transfromMatrix));
 		}
