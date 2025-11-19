@@ -19,6 +19,8 @@ Shader "Roystan/Grass"
 		_BladeCurve("Blade Curvature Amount", Range(1, 4)) = 2	
 		_InteractorRadius("Interactor Radius", Float) = 0.3
 		_InteractorStrength("Interactor Strength", Float) = 1
+		_MinFadeDistance("Min Fade Distance", Float) = 20
+		_MaxFadeDistance("Max Fade Distance", Float) = 50
     }
 
 	CGINCLUDE
@@ -68,6 +70,9 @@ Shader "Roystan/Grass"
 	float _BladeCurve;
 	float _InteractorRadius;
 	float _InteractorStrength;
+	float _MinFadeDistance;
+	float _MaxFadeDistance;
+		
 	uniform float3 _PositionMoving;  // 交互器世界位置
 
 	//和曲面细分冲突，这里可以注释掉
@@ -138,6 +143,11 @@ Shader "Roystan/Grass"
 	{
 		float3 pos = IN[0].vertex;
 
+		float3 worldPos = pos;
+		float distanceToCamera = distance(worldPos, _WorldSpaceCameraPos);
+
+		float FadeRate = 1 - saturate((distanceToCamera - _MinFadeDistance) / (_MaxFadeDistance - _MinFadeDistance));
+
 		//与物体交互
 		// Interactivity
 		float dis = distance(_PositionMoving, pos);
@@ -183,7 +193,7 @@ Shader "Roystan/Grass"
 
 		geometryOutput o;
 		//增加一个草的三角形
-		for (int i = 0; i < BLADE_SEGMENTS; i++)
+		for (int i = 0; i < BLADE_SEGMENTS * FadeRate; i++)
 		{
 			float t = i / (float)BLADE_SEGMENTS;
 			float segmentHeight = height * t;
