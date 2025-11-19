@@ -66,14 +66,14 @@ Material:
     m_Ints: []
     m_Floats:
     - _BendRotationRandom: 0.2
-    - _BladeCurve: 2
-    - _BladeForward: 0.38
-    - _BladeHeight: 0.2
-    - _BladeHeightRandom: 1
+    - _BladeCurve: 1
+    - _BladeForward: 0.4
+    - _BladeHeight: 0.6
+    - _BladeHeightRandom: 2
     - _BladeRandomAmount: 0.5
     - _BladeSegments: 3
     - _BladeWidth: 0.05
-    - _BladeWidthRandom: 0.01
+    - _BladeWidthRandom: 0.03
     - _BlendRotationRandom: 0.55
     - _BumpScale: 1
     - _Cutoff: 0.5
@@ -82,11 +82,11 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InteractorRadius: 0.3
+    - _InteractorRadius: 1.2
     - _InteractorStrength: 1
-    - _MaxFadeDistance: 50
+    - _MaxFadeDistance: 200
     - _Metallic: 0
-    - _MinFadeDistance: 20
+    - _MinFadeDistance: 100
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -96,16 +96,16 @@ Material:
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _Tessellation: 16
-    - _TessellationUniform: 5
+    - _TessellationUniform: 3
     - _TranslucentGain: 0.5
     - _UVSec: 0
     - _WindScale: 1
     - _WindStrength: 1
     - _ZWrite: 1
     m_Colors:
-    - _BottomColor: {r: 0.061297283, g: 0.378, b: 0.07151349, a: 1}
+    - _BottomColor: {r: 0.07371671, g: 0.4943396, b: 0.025183298, a: 1}
     - _Color: {r: 0, g: 0.5754717, b: 0.06694827, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TopColor: {r: 0.5792569, g: 0.84599996, b: 0.3297231, a: 1}
+    - _TopColor: {r: 0.09713125, g: 1, b: 0, a: 1}
     - _WindFrequency: {r: 0.01, g: 0.01, b: 0, a: 0}
   m_BuildTextureStacks: []

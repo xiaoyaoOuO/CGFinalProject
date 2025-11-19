@@ -26,7 +26,7 @@ Shader "Roystan/Grass"
 	CGINCLUDE
 	#include "UnityCG.cginc"
 	#include "Autolight.cginc"
-	#include "Shaders/CustomTessellation.cginc"
+	#include "CustomTessellation.cginc"
 	#define BLADE_SEGMENTS 3
 
 	// Simple noise function, sourced from http://answers.unity.com/answers/624136/view.html
@@ -143,23 +143,23 @@ Shader "Roystan/Grass"
 	{
 		float3 pos = IN[0].vertex;
 
-		float3 worldPos = pos;
+		float3 worldPos = mul(unity_ObjectToWorld, float4(pos, 1)).xyz;
 		float distanceToCamera = distance(worldPos, _WorldSpaceCameraPos);
 
 		float FadeRate = 1 - saturate((distanceToCamera - _MinFadeDistance) / (_MaxFadeDistance - _MinFadeDistance));
 
 		//与物体交互
 		// Interactivity
-		float dis = distance(_PositionMoving, pos);
+		float dis = distance(_PositionMoving, worldPos);
 		float radius = 1 - saturate(dis / _InteractorRadius);
 		// in world radius based on objects interaction radius
-		float3 sphereDisp = pos - _PositionMoving; // position comparison
+		float3 sphereDisp = worldPos - _PositionMoving; // position comparison
 		sphereDisp *= radius; // position multiplied by radius for falloff
 		// increase strength
 		sphereDisp = clamp(sphereDisp.xyz * _InteractorStrength, -0.8, 0.8);
 
 		//wind
-		float2 uv = pos.xz * _WindDistortionMap_ST.xy + _WindDistortionMap_ST.zw + _WindFrequency * _Time.y;
+		float2 uv = worldPos.xz * _WindDistortionMap_ST.xy + _WindDistortionMap_ST.zw + _WindFrequency * _Time.y;
 		float2 windSample = (tex2Dlod(_WindDistortionMap, float4(uv, 0, 0)).xy * 2 - 1) * _WindStrength;
 		float3 wind = normalize(float3(windSample.x, windSample.y, 0));//Wind Vector
 		float3x3 windRotation = AngleAxis3x3(UNITY_PI * windSample, wind);
