@@ -66,15 +66,15 @@ Material:
     m_Ints: []
     m_Floats:
     - _BendRotationRandom: 0.2
-    - _BladeCurve: 1
-    - _BladeForward: 0.4
+    - _BladeCurve: 2
+    - _BladeForward: 0.35
     - _BladeHeight: 0.6
     - _BladeHeightRandom: 2
     - _BladeRandomAmount: 0.5
     - _BladeSegments: 3
     - _BladeWidth: 0.05
     - _BladeWidthRandom: 0.03
-    - _BlendRotationRandom: 0.55
+    - _BlendRotationRandom: 0.5
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -82,8 +82,8 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InteractorRadius: 1.2
-    - _InteractorStrength: 1
+    - _InteractorRadius: 2
+    - _InteractorStrength: 2
     - _MaxFadeDistance: 200
     - _Metallic: 0
     - _MinFadeDistance: 100

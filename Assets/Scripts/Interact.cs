@@ -5,10 +5,10 @@ using UnityEngine;
 public class Interact : MonoBehaviour
 {
     [SerializeField]
-    Renderer _renderer; 
+    Material _material;
     // Update is called once per frame
     void Update()
     {
-        _renderer.material.SetVector("_PositionMoving", transform.position);
+        _material.SetVector("_PositionMoving", transform.position);
     }
 }
