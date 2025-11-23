@@ -36,6 +36,372 @@ Shader "Custom/Water"
         [Space(40)]
         _AlphaWidth("边缘透明宽度",Range(-1,1)) = 0
     }
+    SubShader
+    {
+        Tags { "RenderType" = "Transparent" "Queue" = "Transparent" "IgnoreProjector" = "true"}
+        LOD 500
+        PAss
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_fog
+
+            #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+
+            uniform sampler2D _Foam;
+            uniform float4 _Foam_ST;
+            uniform half4 _DeepColor;
+            uniform half4 _ShalowColor;
+
+            uniform sampler2D _WaterNormal;
+            uniform float4 _WaterNormal_ST;
+            uniform half _NormalScale;
+            uniform half4 _WaveParams;
+
+            uniform half _WaterSpecular;
+            uniform half _WaterSmoothness;
+            uniform half4 _LightDir;
+            uniform half4 _LightColor;
+            uniform half _RimPower;
+
+            uniform half4 _FoamColor;
+            uniform half _FoamDepth;
+            uniform half _FoamFactor;
+            uniform half4 _FoamOffset;
+            uniform sampler2D _CameraDepthTexture;
+
+            uniform half4 _DetailColor;
+            uniform half _WaterWave;
+
+            uniform half _Frequency;
+            uniform half _Amplitude;
+            uniform half _Speed;
+            uniform half _AlphaWidth;
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+                float4 uv_Tex : TEXCOORD0;
+                float4 worldPos : TEXCOORD1;
+                float4 TW0:TEXCOORD2;
+                float4 TW1:TEXCOORD3;
+                float4 TW2:TEXCOORD4;
+                float4 screenPos:TEXCOORD5;
+                UNITY_FOG_COORDS(6)
+            };
+
+            v2f vert(appdata_full v)
+            {
+                //海浪起伏
+                float time = _Time.y * _Speed;
+                float waveValue = sin(time + v.vertex.x *_Frequency)* _Amplitude;
+                v.vertex.xyz = float3(v.vertex.x, v.vertex.y + waveValue, v.vertex.z);
+
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv_Tex.xy = TRANSFORM_TEX(v.texcoord, _Foam);
+                o.uv_Tex.zw = TRANSFORM_TEX(v.texcoord, _WaterNormal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                o.screenPos = ComputeScreenPos(o.vertex);
+
+                
+                fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+                fixed3 worldBinormal = cross(worldNormal, worldTangent) * tangentSign;
+
+                o.TW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, o.worldPos.x);
+                o.TW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, o.worldPos.y);
+                o.TW2 = float4(worldTangent.z, worldBinormal.z, worldNormal.z, o.worldPos.z);
+
+                UNITY_TRANSFER_FOG(o,o.vertex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_TARGET
+            {
+                // 计算水波纹法线
+                half2 panner1 = ( _Time.y * _WaveParams.xy + i.uv_Tex.zw);
+                half2 panner2 = ( _Time.y * _WaveParams.zw + i.uv_Tex.zw);
+
+                half3 worldNormal = BlendNormals(UnpackNormal(tex2D( _WaterNormal, panner1)) 
+                    , UnpackNormal(tex2D(_WaterNormal, panner2)));
+                worldNormal = lerp(half3(0, 0, 1), worldNormal, _NormalScale);
+                worldNormal = normalize(fixed3(
+                    dot(i.TW0.xyz, worldNormal), 
+                    dot(i.TW1.xyz, worldNormal), 
+                    dot(i.TW2.xyz, worldNormal)));
+                
+                // 计算深度
+                half4 screenPos = half4(i.screenPos.xyz,i.screenPos.w);
+                half eyeDepth = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture,UNITY_PROJ_COORD( screenPos ))));
+                half eyeDepthSubScreenPos = abs( eyeDepth - screenPos.w );
+                half depthMask = 1-eyeDepthSubScreenPos + _FoamDepth;
+
+                //计算泡沫
+                half3 water = tex2D(_Foam,i.uv_Tex.xy/_Foam_ST.xy);
+                half3 foam1 = tex2D(_Foam,i.uv_Tex.xy + worldNormal.xy*_FoamOffset.w);
+                half3 foam2 = tex2D(_Foam, _Time.y * _FoamOffset.xy + i.uv_Tex.xy + worldNormal.xy*_FoamOffset.w);
+                float temp_output = ( saturate( (foam1.g + foam2.g ) * depthMask * water.g  -_FoamFactor));
+
+                //光照
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                float NdotV = saturate(dot(worldNormal,viewDir));
+                fixed3 worldLightDir = _LightDir.xyz;
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+
+                //细节颜色
+                half2 detailplanner = i.uv_Tex.xy / _Foam_ST.xy + worldNormal.xy*_WaterWave;
+                half4 detail = tex2D(_Foam, detailplanner).b * _DetailColor;
+
+                half4 diffuse = lerp(_ShalowColor, _DeepColor, water.r);
+                diffuse = lerp( diffuse , _FoamColor * _FoamOffset.z , temp_output);
+                fixed3 specular = _LightColor.rgb * _WaterSpecular * pow(max(0, dot(worldNormal, halfDir)), _WaterSmoothness*256.0);
+                fixed3 rim = pow(1-saturate(NdotV),_RimPower)*_LightColor;
+                diffuse = diffuse * (NdotV + detail) * 0.5;
+                half alpha = saturate(eyeDepthSubScreenPos-_AlphaWidth);
+                fixed4 col = fixed4( diffuse + specular + rim*0.2 ,alpha);
+                UNITY_APPLY_FOG(i.fogCoord, col);
+                return col;
+            }
+            ENDCG
+        }
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 400
+        PAss
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_fog
+
+            #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+
+            uniform sampler2D _Foam;
+            uniform float4 _Foam_ST;
+            uniform half4 _DeepColor;
+            uniform half4 _ShalowColor;
+
+            uniform sampler2D _WaterNormal;
+            uniform float4 _WaterNormal_ST;
+            uniform half _NormalScale;
+            uniform half4 _WaveParams;
+
+            uniform half _WaterSpecular;
+            uniform half _WaterSmoothness;
+            uniform half4 _LightDir;
+            uniform half4 _LightColor;
+            uniform half _RimPower;
+
+            uniform half4 _FoamColor;
+            uniform half _FoamDepth;
+            uniform half _FoamFactor;
+            uniform half4 _FoamOffset;
+            uniform sampler2D _CameraDepthTexture;
+
+            uniform half4 _DetailColor;
+            uniform half _WaterWave;
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+                float4 uv_Tex : TEXCOORD0;
+                float4 worldPos : TEXCOORD1;
+                float4 TW0:TEXCOORD2;
+                float4 TW1:TEXCOORD3;
+                float4 TW2:TEXCOORD4;
+                float4 screenPos:TEXCOORD5;
+                UNITY_FOG_COORDS(6)
+            };
+
+            v2f vert(appdata_full v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv_Tex.xy = TRANSFORM_TEX(v.texcoord, _Foam);
+                o.uv_Tex.zw = TRANSFORM_TEX(v.texcoord, _WaterNormal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                o.screenPos = ComputeScreenPos(o.vertex);
+                
+                fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+                fixed3 worldBinormal = cross(worldNormal, worldTangent) * tangentSign;
+
+                o.TW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, o.worldPos.x);
+                o.TW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, o.worldPos.y);
+                o.TW2 = float4(worldTangent.z, worldBinormal.z, worldNormal.z, o.worldPos.z);
+
+                UNITY_TRANSFER_FOG(o,o.vertex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_TARGET
+            {
+                half2 panner1 = ( _Time.y * _WaveParams.xy + i.uv_Tex.zw);
+                half2 panner2 = ( _Time.y * _WaveParams.zw + i.uv_Tex.zw);
+
+                half3 worldNormal = BlendNormals(UnpackNormal(tex2D( _WaterNormal, panner1)) 
+                    , UnpackNormal(tex2D(_WaterNormal, panner2)));
+                worldNormal = lerp(half3(0, 0, 1), worldNormal, _NormalScale);
+                worldNormal = normalize(fixed3(
+                    dot(i.TW0.xyz, worldNormal), 
+                    dot(i.TW1.xyz, worldNormal), 
+                    dot(i.TW2.xyz, worldNormal)));
+                
+                // 计算深度
+                half4 screenPos = half4(i.screenPos.xyz,i.screenPos.w);
+                half eyeDepth = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture,UNITY_PROJ_COORD( screenPos ))));
+                half eyeDepthSubScreenPos = abs( eyeDepth - screenPos.w );
+                half depthMask = 1-eyeDepthSubScreenPos + _FoamDepth;
+
+                //计算泡沫
+                half3 water = tex2D(_Foam,i.uv_Tex.xy/_Foam_ST.xy);
+                half3 foam1 = tex2D(_Foam,i.uv_Tex.xy + worldNormal.xy*_FoamOffset.w);
+                half3 foam2 = tex2D(_Foam, _Time.y * _FoamOffset.xy + i.uv_Tex.xy + worldNormal.xy*_FoamOffset.w);
+                float temp_output = ( saturate( (foam1.g + foam2.g ) * depthMask * water.g  -_FoamFactor));
+
+                //光照
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                float NdotV = saturate(dot(worldNormal,viewDir));
+                fixed3 worldLightDir = _LightDir.xyz;
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+
+                //细节颜色
+                half2 detailplanner = i.uv_Tex.xy / _Foam_ST.xy + worldNormal.xy*_WaterWave;
+                half4 detail = tex2D(_Foam, detailplanner).b * _DetailColor;
+
+                half4 diffuse = lerp(_ShalowColor, _DeepColor, water.r);
+                diffuse = lerp( diffuse , _FoamColor * _FoamOffset.z , temp_output);
+                fixed3 specular = _LightColor.rgb * _WaterSpecular * pow(max(0, dot(worldNormal, halfDir)), _WaterSmoothness*256.0);
+                fixed3 rim = pow(1-saturate(NdotV),_RimPower)*_LightColor;
+                diffuse.rgb = diffuse.rgb * (NdotV + detail.rgb) * 0.5;
+                fixed4 col = fixed4(diffuse.rgb+specular+rim*0.2,1);
+                UNITY_APPLY_FOG(i.fogCoord, col);
+                return col;
+            }
+            ENDCG
+        }
+    }
+    SubShader
+    {
+        Tags { "RenderType"="Opaque" }
+        LOD 300
+        PAss
+        {
+            CGPROGRAM
+            #pragma vertex vert
+            #pragma fragment frag
+            #pragma multi_compile_fog
+
+            #include "UnityCG.cginc"
+            #include "Lighting.cginc"
+
+            uniform sampler2D _Foam;
+            uniform float4 _Foam_ST;
+            uniform half4 _DeepColor;
+            uniform half4 _ShalowColor;
+
+            uniform sampler2D _WaterNormal;
+            uniform float4 _WaterNormal_ST;
+            uniform half _NormalScale;
+            uniform half4 _WaveParams;
+
+            uniform half _WaterSpecular;
+            uniform half _WaterSmoothness;
+            uniform half4 _LightDir;
+            uniform half4 _LightColor;
+            uniform half _RimPower;
+
+            uniform half4 _FoamColor;
+            uniform half _FoamDepth;
+            uniform half _FoamFactor;
+            uniform half4 _FoamOffset;
+            uniform sampler2D _CameraDepthTexture;
+
+            struct v2f
+            {
+                float4 vertex : SV_POSITION;
+                float4 uv_Tex : TEXCOORD0;
+                float4 worldPos : TEXCOORD1;
+                float4 TW0:TEXCOORD2;
+                float4 TW1:TEXCOORD3;
+                float4 TW2:TEXCOORD4;
+                float4 screenPos:TEXCOORD5;
+                UNITY_FOG_COORDS(6)
+            };
+
+            v2f vert(appdata_full v)
+            {
+                v2f o;
+                o.vertex = UnityObjectToClipPos(v.vertex);
+                o.uv_Tex.xy = TRANSFORM_TEX(v.texcoord, _Foam);
+                o.uv_Tex.zw = TRANSFORM_TEX(v.texcoord, _WaterNormal);
+                o.worldPos = mul(unity_ObjectToWorld, v.vertex);
+                o.screenPos = ComputeScreenPos(o.vertex);
+                
+                fixed3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                fixed3 worldTangent = UnityObjectToWorldDir(v.tangent.xyz);
+                fixed tangentSign = v.tangent.w * unity_WorldTransformParams.w;
+                fixed3 worldBinormal = cross(worldNormal, worldTangent) * tangentSign;
+
+                o.TW0 = float4(worldTangent.x, worldBinormal.x, worldNormal.x, o.worldPos.x);
+                o.TW1 = float4(worldTangent.y, worldBinormal.y, worldNormal.y, o.worldPos.y);
+                o.TW2 = float4(worldTangent.z, worldBinormal.z, worldNormal.z, o.worldPos.z);
+
+                UNITY_TRANSFER_FOG(o,o.vertex);
+                return o;
+            }
+
+            fixed4 frag (v2f i) : SV_TARGET
+            {
+                half2 panner1 = ( _Time.y * _WaveParams.xy + i.uv_Tex.zw);
+                half2 panner2 = ( _Time.y * _WaveParams.zw + i.uv_Tex.zw);
+
+                half3 worldNormal = BlendNormals(UnpackNormal(tex2D( _WaterNormal, panner1)) 
+                    , UnpackNormal(tex2D(_WaterNormal, panner2)));
+                worldNormal = lerp(half3(0, 0, 1), worldNormal, _NormalScale);
+                worldNormal = normalize(fixed3(
+                    dot(i.TW0.xyz, worldNormal), 
+                    dot(i.TW1.xyz, worldNormal), 
+                    dot(i.TW2.xyz, worldNormal)));
+                
+                // 计算深度
+                half4 screenPos = half4(i.screenPos.xyz,i.screenPos.w);
+                half eyeDepth = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture,UNITY_PROJ_COORD( screenPos ))));
+                half eyeDepthSubScreenPos = abs( eyeDepth - screenPos.w );
+                half depthMask = 1-eyeDepthSubScreenPos + _FoamDepth;
+
+                //计算泡沫
+                half3 water = tex2D(_Foam,i.uv_Tex.xy/_Foam_ST.xy);
+                half3 foam1 = tex2D(_Foam,i.uv_Tex.xy + worldNormal.xy*_FoamOffset.w);
+                half3 foam2 = tex2D(_Foam, _Time.y * _FoamOffset.xy + i.uv_Tex.xy + worldNormal.xy*_FoamOffset.w);
+                float temp_output = ( saturate( (foam1.g + foam2.g ) * depthMask * water.g  -_FoamFactor));
+
+                //光照
+                fixed3 viewDir = normalize(UnityWorldSpaceViewDir(i.worldPos));
+                float NdotV = saturate(dot(worldNormal,viewDir));
+                fixed3 worldLightDir = _LightDir.xyz;
+                fixed3 halfDir = normalize(worldLightDir + viewDir);
+
+                half4 diffuse = lerp(_ShalowColor, _DeepColor, water.r);
+                diffuse = lerp( diffuse , _FoamColor * _FoamOffset.z , temp_output);
+                fixed3 specular = _LightColor.rgb * _WaterSpecular * pow(max(0, dot(worldNormal, halfDir)), _WaterSmoothness*256.0);
+                fixed3 rim = pow(1-saturate(NdotV),_RimPower)*_LightColor;
+                diffuse *= NdotV;
+                fixed4 col = fixed4(diffuse.rgb+specular+rim*0.2,1);
+                UNITY_APPLY_FOG(i.fogCoord, col);
+                return col;
+            }
+            ENDCG
+        }
+    }
 
     SubShader
     {
