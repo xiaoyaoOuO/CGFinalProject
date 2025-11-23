@@ -35,12 +35,17 @@ Shader "Custom/Water"
 
         [Space(40)]
         _AlphaWidth("边缘透明宽度",Range(-1,1)) = 0
+
+        [Space(20)]
+        _RefractionIntensity("折射强度", Range(0,1)) = 0.5
     }
     SubShader
     {
         Tags { "RenderType" = "Transparent" "Queue" = "Transparent" "IgnoreProjector" = "true"}
         LOD 500
-        PAss
+
+        GrabPass { "_CameraOpaqueTexture" }
+        Pass
         {
             CGPROGRAM
             #pragma vertex vert
@@ -79,6 +84,8 @@ Shader "Custom/Water"
             uniform half _Amplitude;
             uniform half _Speed;
             uniform half _AlphaWidth;
+            uniform half _RefractionIntensity;
+            sampler2D _CameraOpaqueTexture;
 
             struct v2f
             {
@@ -91,6 +98,21 @@ Shader "Custom/Water"
                 float4 screenPos:TEXCOORD5;
                 UNITY_FOG_COORDS(6)
             };
+
+            float3 Refraction(half eyeDepth,half4 screenPos,float refractionintensity)
+            {
+                //最后返回折射颜色
+                float3 refractionColor = float3(0,0,0);
+                float DepthDiff = eyeDepth - screenPos.w;
+                
+                //UV扰动
+                float2 refractionUVOffset = float2(0.5,0.5)*0.01*refractionintensity;
+                refractionUVOffset *= saturate((DepthDiff)/abs(refractionintensity)+0.001);
+                float2 sceneRefractionUVs = (screenPos.xy/screenPos.w)+float4(refractionUVOffset, refractionUVOffset).rg;
+
+                refractionColor = tex2D(_CameraOpaqueTexture, sceneRefractionUVs);
+                return refractionColor;
+            }
 
             v2f vert(appdata_full v)
             {
@@ -156,13 +178,19 @@ Shader "Custom/Water"
                 half2 detailplanner = i.uv_Tex.xy / _Foam_ST.xy + worldNormal.xy*_WaterWave;
                 half4 detail = tex2D(_Foam, detailplanner).b * _DetailColor;
 
+                //折射
+                float3 refractionColor = float3(0,0,0);
+                if(eyeDepth - screenPos.w > 0.001 && eyeDepth - screenPos.w < 5){
+                    refractionColor = Refraction(eyeDepth,screenPos,_RefractionIntensity);
+                }
                 half4 diffuse = lerp(_ShalowColor, _DeepColor, water.r);
                 diffuse = lerp( diffuse , _FoamColor * _FoamOffset.z , temp_output);
                 fixed3 specular = _LightColor.rgb * _WaterSpecular * pow(max(0, dot(worldNormal, halfDir)), _WaterSmoothness*256.0);
                 fixed3 rim = pow(1-saturate(NdotV),_RimPower)*_LightColor;
                 diffuse = diffuse * (NdotV + detail) * 0.5;
                 half alpha = saturate(eyeDepthSubScreenPos-_AlphaWidth);
-                fixed4 col = fixed4( diffuse + specular + rim*0.2 ,alpha);
+                float3 finalColor = diffuse + specular + rim*0.2 + refractionColor;
+                fixed4 col = fixed4( finalColor ,alpha);
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
             }
