@@ -38,6 +38,7 @@ Shader "Custom/Water"
 
         [Space(20)]
         _RefractionIntensity("折射强度", Range(0,1)) = 0.5
+        _ReflectionIntensity("反射扰动", Range(0,1)) = 0.5
     }
     SubShader
     {
@@ -85,7 +86,12 @@ Shader "Custom/Water"
             uniform half _Speed;
             uniform half _AlphaWidth;
             uniform half _RefractionIntensity;
+
             sampler2D _CameraOpaqueTexture;
+            uniform float4 _CameraOpaqueTexture_TexelSize;
+
+            float _ReflectionIntensity;
+            uniform sampler2D _ReflectionTexture;
 
             struct v2f
             {
@@ -98,17 +104,40 @@ Shader "Custom/Water"
                 float4 screenPos:TEXCOORD5;
                 UNITY_FOG_COORDS(6)
             };
+            float3 Reflection(half4 screenPos, float3 worldNormal, float3 viewDir)
+            {
+                float2 reflectUV = screenPos.xy / screenPos.w;
+                
+                // 应用法线扰动来实现水面波纹效果
+                float2 normalDisturb = normalize(worldNormal.xz) * _ReflectionIntensity;
+                reflectUV += normalDisturb * 0.05;
+                
+                // 确保UV在有效范围内
+                reflectUV = saturate(reflectUV);
+                
+                float3 reflectColor = tex2D(_ReflectionTexture, reflectUV).rgb;
+                
+                // 根据视角调整反射强度（菲涅尔效应）
+                float fresnelReflect = pow(1.0 - saturate(dot(worldNormal, viewDir)), 2.0);
+                reflectColor *= fresnelReflect;
+                
+                return reflectColor;
+            }
 
-            float3 Refraction(half eyeDepth,half4 screenPos,float refractionintensity)
+            float2 AlignWithGrabTexel(float2 uv){
+               return (floor(uv*_CameraOpaqueTexture_TexelSize.zw)+ 0.5)*abs(_CameraOpaqueTexture_TexelSize.xy);
+            }
+            float3 Refraction(half eyeDepth,half4 screenPos,float refractionintensity,float3 WorldNormal)
             {
                 //最后返回折射颜色
                 float3 refractionColor = float3(0,0,0);
                 float DepthDiff = eyeDepth - screenPos.w;
                 
                 //UV扰动
-                float2 refractionUVOffset = float2(0.5,0.5)*0.01*refractionintensity;
+                float2 refractionUVOffset = WorldNormal*0.1*refractionintensity;
                 refractionUVOffset *= saturate((DepthDiff)/abs(refractionintensity)+0.001);
                 float2 sceneRefractionUVs = (screenPos.xy/screenPos.w)+float4(refractionUVOffset, refractionUVOffset).rg;
+                sceneRefractionUVs = AlignWithGrabTexel(sceneRefractionUVs);
 
                 refractionColor = tex2D(_CameraOpaqueTexture, sceneRefractionUVs);
                 return refractionColor;
@@ -180,16 +209,23 @@ Shader "Custom/Water"
 
                 //折射
                 float3 refractionColor = float3(0,0,0);
-                if(eyeDepth - screenPos.w > 0.001 && eyeDepth - screenPos.w < 5){
-                    refractionColor = Refraction(eyeDepth,screenPos,_RefractionIntensity);
+                if(eyeDepth - screenPos.w > 0 && eyeDepth - screenPos.w < 6){
+                    refractionColor = Refraction(eyeDepth,screenPos,_RefractionIntensity,worldNormal);
                 }
+                //反射
+                float3 reflectionColor = Reflection(screenPos, worldNormal, viewDir);
+
                 half4 diffuse = lerp(_ShalowColor, _DeepColor, water.r);
                 diffuse = lerp( diffuse , _FoamColor * _FoamOffset.z , temp_output);
                 fixed3 specular = _LightColor.rgb * _WaterSpecular * pow(max(0, dot(worldNormal, halfDir)), _WaterSmoothness*256.0);
                 fixed3 rim = pow(1-saturate(NdotV),_RimPower)*_LightColor;
                 diffuse = diffuse * (NdotV + detail) * 0.5;
                 half alpha = saturate(eyeDepthSubScreenPos-_AlphaWidth);
-                float3 finalColor = diffuse + specular + rim*0.2 + refractionColor;
+                
+                // 混合反射、折射和基本光照
+                float3 finalColor = diffuse.rgb + specular + rim*0.2;
+                finalColor += refractionColor * (1.0 - alpha) * 0.5;
+                finalColor += reflectionColor * alpha;
                 fixed4 col = fixed4( finalColor ,alpha);
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;
