@@ -39,6 +39,11 @@ Shader "Custom/Water"
         [Space(20)]
         _RefractionIntensity("折射强度", Range(0,1)) = 0.5
         _ReflectionIntensity("反射扰动", Range(0,1)) = 0.5
+
+        [Space(20)]
+        _Wave1("波1：XY方向，Z陡峭度，W波长", vector) = (1,0,0.2,60)
+        _Wave2("波2：XY方向，Z陡峭度，W波长", vector) = (0.6,0.8,0.15,31)
+        _Wave3("波3：XY方向，Z陡峭度，W波长", vector) = (0.5,0.5,0.1,18)
     }
     SubShader
     {
@@ -93,6 +98,10 @@ Shader "Custom/Water"
             float _ReflectionIntensity;
             uniform sampler2D _ReflectionTexture;
 
+            float4 _Wave1;
+            float4 _Wave2;
+            float4 _Wave3;
+
             struct v2f
             {
                 float4 vertex : SV_POSITION;
@@ -143,12 +152,55 @@ Shader "Custom/Water"
                 return refractionColor;
             }
 
+            // Gerstner 波函数
+            float3 GerstnerWave(float4 wave, float3 p, inout float3 tangent, inout float3 normal)
+            {
+                float steepness = wave.z;
+                float wavelength = wave.w;
+                float k = 2.0 * 3.14159 / wavelength;
+                float c = sqrt(9.8 / k);
+                float2 d = normalize(wave.xy);
+                float f = k * (dot(d, p.xz) - c * _Time.y);
+                float a = steepness / k;
+
+                tangent += float3(
+                    -d.x * d.x * (steepness * sin(f)),
+                    d.x * (steepness * cos(f)),
+                    -d.x * d.y * (steepness * sin(f))
+                );
+                normal += float3(
+                    -d.x * d.y * (steepness * sin(f)),
+                    d.y * (steepness * cos(f)),
+                    -d.y * d.y * (steepness * sin(f))
+                );
+                return float3(
+                    d.x * a * cos(f),
+                    a * sin(f),
+                    d.y * a * cos(f)
+                );
+            }
+
             v2f vert(appdata_full v)
             {
                 //海浪起伏
                 float time = _Time.y * _Speed;
-                float waveValue = sin(time + v.vertex.x *_Frequency)* _Amplitude;
-                v.vertex.xyz = float3(v.vertex.x, v.vertex.y + waveValue, v.vertex.z);
+                // float waveValue = sin(time + v.vertex.x *_Frequency)* _Amplitude;
+                // v.vertex.xyz = float3(v.vertex.x, v.vertex.y + waveValue, v.vertex.z);
+                float3 pos = v.vertex.xyz;
+                float3 tangent = v.tangent.xyz;
+                float3 normal = v.normal;
+
+                // 定义多个波（波向、陡峭度、波长）
+                float4 wave1 = _Wave1;
+                float4 wave2 = _Wave2;
+                float4 wave3 = _Wave3;
+
+                pos += GerstnerWave(wave1, pos, tangent, normal);
+                pos += GerstnerWave(wave2, pos, tangent, normal);
+                pos += GerstnerWave(wave3, pos, tangent, normal);
+                v.vertex.xyz = pos;
+                v.normal = normalize(normal);
+                v.tangent.xyz = normalize(tangent);
 
                 v2f o;
                 o.vertex = UnityObjectToClipPos(v.vertex);
@@ -225,7 +277,7 @@ Shader "Custom/Water"
                 // 混合反射、折射和基本光照
                 float3 finalColor = diffuse.rgb + specular + rim*0.2;
                 finalColor += refractionColor * (1.0 - alpha) * 0.5;
-                finalColor += reflectionColor * alpha;
+                finalColor += reflectionColor;
                 fixed4 col = fixed4( finalColor ,alpha);
                 UNITY_APPLY_FOG(i.fogCoord, col);
                 return col;

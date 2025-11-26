@@ -112,5 +112,8 @@ Material:
     - _LightColor: {r: 1, g: 1, b: 1, a: 1}
     - _LightDir: {r: -0.3, g: 0.72, b: 0.83, a: 0}
     - _ShalowColor: {r: 0.15686275, g: 0.99215686, b: 1, a: 0}
+    - _Wave1: {r: 1, g: 0, b: 0.2, a: 50}
+    - _Wave2: {r: 0.6, g: 0.8, b: 0.15, a: 10}
+    - _Wave3: {r: 0.5, g: 0.5, b: 0.1, a: 30}
     - _WaveParams: {r: 0.04, g: 0.02, b: -0.02, a: -0.04}
   m_BuildTextureStacks: []
