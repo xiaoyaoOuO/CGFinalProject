@@ -23,6 +23,7 @@ public class NewBehaviourScript : MonoBehaviour
     [SerializeField]
     private Material material;
     public Camera SourceCamera;
+    public float m_settings = 0.03f;
 
     public static NewBehaviourScript AddTo(GameObject go, Camera sourceCamera)
     {
@@ -67,6 +68,15 @@ public class NewBehaviourScript : MonoBehaviour
         return matrix;
     }
 
+    private Vector4 CameraSpacePlane(Camera cam, Vector3 pos, Vector3 normal, float sideSign)
+    {
+        Vector3 offsetPos = pos + normal * 0.07f; // 小偏移，避免自裁切
+        Matrix4x4 m = cam.worldToCameraMatrix;
+        Vector3 cpos = m.MultiplyPoint(offsetPos);
+        Vector3 cnormal = m.MultiplyVector(normal).normalized * sideSign;
+        return new Vector4(cnormal.x, cnormal.y, cnormal.z, -Vector3.Dot(cpos, cnormal));
+    }
+
     #region  Mono
     private void OnEnable()
     {
@@ -89,6 +99,18 @@ public class NewBehaviourScript : MonoBehaviour
                 curCamera = go.AddComponent<Camera>();
             }
             curCamera.CopyFrom(SourceCamera);
+            // 排除水层，避免反射相机捕捉到水面自身导致递归反射
+            int waterLayer = LayerMask.NameToLayer("Water");
+            if (waterLayer >= 0)
+            {
+                curCamera.cullingMask = SourceCamera.cullingMask & ~(1 << waterLayer);
+            }
+            else
+            {
+                // 如果没有名为"Water"的层，保持与 SourceCamera 相同的 mask 并给出警告
+                curCamera.cullingMask = SourceCamera.cullingMask;
+                Debug.LogWarning("Layer 'Water' not found. Reflection camera culling mask unchanged.", this);
+            }
         }
         if(reflectImage != null)
         {
@@ -126,6 +148,11 @@ public class NewBehaviourScript : MonoBehaviour
         curCamera.worldToCameraMatrix = SourceCamera.worldToCameraMatrix * reflectionMat;
         curCamera.transform.position = reflectionMat.MultiplyPoint(SourceCamera.transform.position);
 
+        Vector3 normal = transform.up;
+        Vector3 pos = transform.position;
+        Vector4 clipPlane = CameraSpacePlane(curCamera, pos, normal, 1.0f);
+        curCamera.projectionMatrix = SourceCamera.CalculateObliqueMatrix(clipPlane);
+
         bool prevCulling = GL.invertCulling;
         try
         {
@@ -156,6 +183,37 @@ public class NewBehaviourScript : MonoBehaviour
         destCamera.fieldOfView = srcCamera.fieldOfView;
         destCamera.aspect = srcCamera.aspect;
         destCamera.orthographicSize = srcCamera.orthographicSize;
+    }
+
+    private Matrix4x4 CalculateObliqueMatrix(Vector4 clipPlane)
+    {
+        Matrix4x4 projection = curCamera.projectionMatrix;
+        if (clipPlane == null || curCamera == null)
+            return projection;
+        Vector4 new_N = curCamera.worldToCameraMatrix.inverse.transpose * clipPlane;
+        Vector4 q = Matrix4x4.identity * new Vector4(
+            Mathf.Sign(new_N.x),
+            Mathf.Sign(new_N.y),
+            1.0f,
+            1.0f
+        );
+        q = projection.inverse * q;
+
+        var a = 2.0f / Vector4.Dot(new_N, q);
+        var a_newN = new_N * a;
+        var M4 = new Vector4(
+            projection.m30,
+            projection.m31,
+            projection.m32,
+            projection.m33
+        );
+        var newM3 = a_newN - M4;   
+
+        projection.m20 = newM3.x;
+        projection.m21 = newM3.y;
+        projection.m22 = newM3.z;
+        projection.m23 = newM3.w;
+        return projection;
     }
     #endregion
 }

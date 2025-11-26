@@ -63,6 +63,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _ReflectionTexture:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _WaterNormal:
         m_Texture: {fileID: 2800000, guid: ba32cf01dc4163f44b142bd8c999a9f8, type: 3}
         m_Scale: {x: 10, y: 10}
@@ -86,6 +90,7 @@ Material:
     - _NormalScale: 0.3
     - _OcclusionStrength: 1
     - _Parallax: 0.02
+    - _ReflectionIntensity: 0.5
     - _RefractionIntensity: 0.588
     - _RimPower: 8
     - _SmoothnessTextureChannel: 0
