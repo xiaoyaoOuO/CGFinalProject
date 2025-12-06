@@ -1,5 +1,5 @@
 %YAML 1.1
-%TAG !u! tag:unity3d.com,2011:
+%TAG !u! tag:yousandi.cn,2023:
 --- !u!162 &1
 EditorUserSettings:
   m_ObjectHideFlags: 0
@@ -21,7 +21,7 @@ EditorUserSettings:
       value: 5057505e5c0c580e09570923127a0844434e4d7c792b7e35742d4b64e3b1606b
       flags: 0
     RecentlyUsedSceneGuid-5:
-      value: 0152015e00560c095a085b7b497b5a44454e417b7e2970632f714f67b6b86260
+      value: 0507075451030a58595b5c271477094445164e2f7c7974357a7f4e6be0b96068
       flags: 0
     RecentlyUsedSceneGuid-6:
       value: 5a5757560101590a5d0c0e24427b5d44434e4c7a7b7a23677f2b4565b7b5353a
