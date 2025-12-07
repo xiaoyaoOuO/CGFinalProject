@@ -1,5 +1,5 @@
 %YAML 1.1
-%TAG !u! tag:yousandi.cn,2023:
+%TAG !u! tag:unity3d.com,2011:
 --- !u!21 &2100000
 Material:
   serializedVersion: 8
@@ -8,12 +8,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Daynight_Skybox
-  m_Shader: {fileID: 4800000, guid: e16e7ce3c32efd748bbd60e3128cfb24, type: 3}
+  m_Shader: {fileID: 4800000, guid: d5c09ad09ef837441a2e0afdbddf0941, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _SUNDISK_HIGH_QUALITY
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - NIGHT_MODE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -33,19 +34,19 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CloudTex:
-        m_Texture: {fileID: 2800000, guid: 897ddb7e588a68d4496190a30cd75286, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6dee6088faffc874daed1cdd1e50443e, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CloudTexFar:
-        m_Texture: {fileID: 2800000, guid: 4e752a06b42674d4da9b65db29f9899a, type: 3}
+        m_Texture: {fileID: 2800000, guid: a7cf6c075f05b5b4eaf0e0f9d8ef4dd0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _CloudTexNear:
-        m_Texture: {fileID: 2800000, guid: d466036f4bbc8cb4b9a7c4fc86c002ab, type: 3}
+        m_Texture: {fileID: 2800000, guid: 6d5af5e3a4eea124396cbcd6782a2fab, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DayTex:
-        m_Texture: {fileID: 2800000, guid: 00bf1b0257a246a4c8798b079f3a14d5, type: 3}
+        m_Texture: {fileID: 2800000, guid: 05c740d8df1d0a64bbd2b818ab10796f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _DetailAlbedoMap:
@@ -89,7 +90,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NightTex:
-        m_Texture: {fileID: 2800000, guid: 8bb3ee1a66206d545869570190aefd31, type: 3}
+        m_Texture: {fileID: 2800000, guid: b6cd347f71faefe41973fb7bf10609b9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
@@ -133,7 +134,7 @@ Material:
     - _Cutoff: 0.5
     - _DayAnimIntensity: 0.06
     - _DayAnimSpeed: 0.06
-    - _DayNightBlend: 0
+    - _DayNightBlend: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Exposure: 0.43000004
@@ -142,8 +143,8 @@ Material:
     - _GlossyReflections: 1
     - _Metallic: 0
     - _Mode: 0
-    - _MoonGlowIntensity: 0.2
-    - _MoonIntensity: 0.8
+    - _MoonGlowIntensity: 0.6
+    - _MoonIntensity: 0.5
     - _MoonSize: 2
     - _MoonSoftness: 0.25
     - _OcclusionStrength: 1
@@ -156,7 +157,7 @@ Material:
     - _StarScale: 0.08
     - _StarsIntensity: 0.4
     - _SunDisk: 2
-    - _SunIntensity: 0.70168406
+    - _SunIntensity: 0.05
     - _SunSize: 3
     - _SunSizeConvergence: 5
     - _UVSec: 0
@@ -167,8 +168,8 @@ Material:
     - _DayTopColor: {r: 0.45, g: 0.7, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 0.36899996, g: 0.34899998, b: 0.34099993, a: 1}
-    - _MoonGlowColor: {r: 0.91823894, g: 0.8441506, b: 0.7016731, a: 1}
+    - _MoonGlowColor: {r: 1, g: 0.95, b: 0.85, a: 1}
     - _SkyTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _SunColor: {r: 0.9924528, g: 0.9924528, b: 0.9924528, a: 1}
-    - _SunDir: {r: 0, g: 0.65458155, b: -0.75599146, a: 0}
+    - _SunDir: {r: 0, g: -0.87699664, b: -0.4804966, a: 0}
   m_BuildTextureStacks: []
