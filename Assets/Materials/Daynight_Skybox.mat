@@ -137,6 +137,8 @@ Material:
     - _DayNightBlend: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
+    - _DuskBlend: 0
+    - _DuskCloudIntensity: 1
     - _Exposure: 0.43000004
     - _GlossMapScale: 1
     - _Glossiness: 0.5
@@ -155,7 +157,7 @@ Material:
     - _StarDensity: 60
     - _StarJitter: 0.5
     - _StarScale: 0.08
-    - _StarsIntensity: 0.4
+    - _StarsIntensity: 0.5
     - _SunDisk: 2
     - _SunIntensity: 0.05
     - _SunSize: 3
@@ -164,12 +166,16 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _DayHorizonColor: {r: 1, g: 0.95, b: 0.85, a: 1}
-    - _DayTopColor: {r: 0.45, g: 0.7, b: 1, a: 1}
+    - _DayHorizonColor: {r: 1, g: 0.9490196, b: 0.8509804, a: 0}
+    - _DayTopColor: {r: 0.4509804, g: 0.69803923, b: 1, a: 0}
+    - _DuskCloudTint: {r: 1, g: 1, b: 1, a: 1}
+    - _DuskHorizonColor: {r: 1, g: 0.4, b: 0.2, a: 1}
+    - _DuskMidColor: {r: 1, g: 0.6, b: 0.29803923, a: 1}
+    - _DuskTopColor: {r: 0.4509804, g: 0.69803923, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _GroundColor: {r: 0.36899996, g: 0.34899998, b: 0.34099993, a: 1}
     - _MoonGlowColor: {r: 1, g: 0.95, b: 0.85, a: 1}
     - _SkyTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _SunColor: {r: 0.9924528, g: 0.9924528, b: 0.9924528, a: 1}
-    - _SunDir: {r: 0, g: -0.87699664, b: -0.4804966, a: 0}
+    - _SunColor: {r: 1, g: 1, b: 1, a: 1}
+    - _SunDir: {r: 0, g: -0.9377175, b: 0.34739873, a: 0}
   m_BuildTextureStacks: []

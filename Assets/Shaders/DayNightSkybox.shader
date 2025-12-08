@@ -37,6 +37,14 @@ Shader "Custom/DayNightSkybox"
         _MoonSoftness("Moon Edge Softness", Range(0,1)) = 0.25
         _MoonGlowColor("Moon Glow Color", Color) = (1,0.95,0.85,1)
         _MoonGlowIntensity("Moon Glow Intensity", Float) = 0.6
+        
+        // 黄昏专用参数
+        _DuskTopColor("Dusk Top Color", Color) = (0.8,0.2,0.1,1)
+        _DuskHorizonColor("Dusk Horizon Color", Color) = (1.0,0.6,0.3,1)
+        _DuskMidColor("Dusk Mid Color", Color) = (1.0,0.4,0.2,1)
+        _DuskBlend("Dusk Blend", Range(0,1)) = 0
+        _DuskCloudTint("Dusk Cloud Tint", Color) = (1.0,0.7,0.4,1)
+        _DuskCloudIntensity("Dusk Cloud Intensity", Range(0,2)) = 0.6
     }
     SubShader
     {
@@ -85,6 +93,12 @@ Shader "Custom/DayNightSkybox"
             float _MoonSoftness;
             float4 _MoonGlowColor;
             float _MoonGlowIntensity;
+            float4 _DuskTopColor;
+            float4 _DuskHorizonColor;
+            float4 _DuskMidColor;
+            float _DuskBlend;
+            float4 _DuskCloudTint;
+            float _DuskCloudIntensity;
 
             struct appdata
             {
@@ -125,14 +139,21 @@ Shader "Custom/DayNightSkybox"
                 float3 dir = normalize(i.dir);
                 float2 uv = DirToLatLongUV(dir);
 
-                // day / night base
+                // day / night base with dusk support
                 // 日间使用程序化动画：垂直渐变（地平线 -> 天顶）并带有微弱随时间变化的色彩抖动
                 float t = saturate((dir.y + 1.0) * 0.5); // 0 at nadir, 1 at zenith
                 float grad = pow(t, 1.35);
                 float3 proceduralDay = lerp(_DayHorizonColor.rgb, _DayTopColor.rgb, grad);
+                
+                // 黄昏时刻的颜色梯度：地平线(温暖橙红) -> 中层(血红) -> 天顶(深紫)
+                float3 duskColor = lerp(_DuskHorizonColor.rgb, _DuskMidColor.rgb, t * 0.5) + 
+                                   lerp(_DuskMidColor.rgb, _DuskTopColor.rgb, max(0.0, t - 0.5) * 2.0);
+                // 在日间和黄昏之间混合（_DuskBlend: 0=日间, 1=黄昏）
+                proceduralDay = lerp(proceduralDay, duskColor, _DuskBlend);
+                
                 // 小幅度时间和方向相关抖动，增加天空动态感
                 float anim = sin(_Time.y * _DayAnimSpeed + dir.x * 6.28318) * 0.5 + 0.5;
-                proceduralDay += _DayAnimIntensity * (anim - 0.5);
+                proceduralDay += _DayAnimIntensity * (anim - 0.5) * (1.0 - _DuskBlend * 0.5); // 黄昏时减弱动画强度
                 fixed4 dayCol = fixed4(proceduralDay, 1.0);
 
                 // 夜间仍使用夜空贴图（包含星星），并由脚本的 _StarsIntensity 调整亮度
@@ -210,6 +231,13 @@ Shader "Custom/DayNightSkybox"
                 float cloudDarkenFactor = lerp(_CloudDayDarken, _CloudNightDarken, blend);
                 float cloudBrightness = lerp(_CloudDayBrightness, _CloudNightBrightness, blend);
                 float cloudLayerOpacity = lerp(_CloudDayOpacity, _CloudNightOpacity, blend);
+
+                // 黄昏时云层被夕阳染红（增加温暖感）
+                if (_DuskBlend > 0.01)
+                {
+                    combinedCloudColor = lerp(combinedCloudColor, _DuskCloudTint.rgb, _DuskBlend);
+                    cloudBrightness = lerp(cloudBrightness, _DuskCloudIntensity, _DuskBlend);
+                }
 
                 // 将云的 alpha 乘以日夜不透明度因子（以便白天/夜间能分别控制强度）
                 combinedAlpha = combinedAlpha * cloudLayerOpacity;

@@ -152,9 +152,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cc7b7b72442a1aa4688435b921293444, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dayDurationInSeconds: 120
+  dayDurationInSeconds: 30
   currentTimeOfDay: 0
   sunLight: {fileID: 1393219952}
+  duskColor: {r: 1, g: 0.21520592, b: 0, a: 1}
+  duskRangeAngle: {x: 0, y: 30}
+  originalTopSkyColor: {r: 0.4509804, g: 0.69803923, b: 1, a: 0}
+  originalHorizonColor: {r: 1, g: 0.9490196, b: 0.8509804, a: 0}
+  duskTopColor: {r: 0.4509804, g: 0.69803923, b: 1, a: 1}
+  duskHorizonColor: {r: 1, g: 0.4, b: 0.2, a: 1}
+  duskMidColor: {r: 1, g: 0.6, b: 0.29803923, a: 1}
   skyboxMaterial: {fileID: 2100000, guid: ff03f6eb67c7e53459f8ac51a724a936, type: 2}
   moonPrefab: {fileID: 0}
   moonMaterial: {fileID: 2100000, guid: 3ee9c818a29ddba4597729d2b65434e1, type: 2}
@@ -168,20 +175,20 @@ MonoBehaviour:
   moonSoftness: 0.25
   moonGlowColor: {r: 1, g: 0.95, b: 0.85, a: 1}
   moonGlowIntensity: 0.6
-  nightAmbientIntensity: 0.8
-  nightAmbientColor: {r: 0.5746478, g: 0.5999999, b: 0, a: 1}
+  nightAmbientIntensity: 0.22
+  nightAmbientColor: {r: 0.921265, g: 0.93207544, b: 0.06858658, a: 1}
   enableMoonDirectionalLight: 1
-  moonDirectionalIntensity: 0.2
+  moonDirectionalIntensity: 0.35
   moonDirectionalColor: {r: 0.98264885, g: 1, b: 0.3679244, a: 1}
   lightTransitionDuration: 2
-  nightElevationThreshold: -3
+  nightElevationThreshold: 0
   daySkyTexture: {fileID: 2800000, guid: 05c740d8df1d0a64bbd2b818ab10796f, type: 3}
   nightSkyTexture: {fileID: 2800000, guid: b6cd347f71faefe41973fb7bf10609b9, type: 3}
   cloudTexture: {fileID: 2800000, guid: 6dee6088faffc874daed1cdd1e50443e, type: 3}
   cloudTextureNear: {fileID: 2800000, guid: 6d5af5e3a4eea124396cbcd6782a2fab, type: 3}
   cloudTextureFar: {fileID: 2800000, guid: a7cf6c075f05b5b4eaf0e0f9d8ef4dd0, type: 3}
   cloudSpeed: 0.1
-  starsIntensity: 0.4
+  starsIntensity: 0.5
   cloudOpacity: 0.5
   cloudNearScale: 4
   cloudFarScale: 1.2

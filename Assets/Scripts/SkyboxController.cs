@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -14,6 +15,16 @@ public class DayNightController : MonoBehaviour
 
     [Header("主光源（太阳）")]
     public Light sunLight; // 场景中的太阳（方向光）
+    public Color duskColor = new Color(1f, 0.5f, 0.2f); // 黄昏时分的太阳颜色
+    //黄昏的时间范围(0度到30度)
+    public Vector2 duskRangeAngle = new Vector2(0f, 30f);
+    public Color originalTopSkyColor;
+    public Color originalHorizonColor;
+    
+    [Header("黄昏效果")]
+    public Color duskTopColor = new Color(0.8f, 0.2f, 0.1f); // 天顶深紫/红
+    public Color duskHorizonColor = new Color(1.0f, 0.6f, 0.3f); // 地平线温暖橙红
+    public Color duskMidColor = new Color(1.0f, 0.4f, 0.2f); // 中层血红色
 
     [Header("天空盒")]
     public Material skyboxMaterial;
@@ -36,7 +47,7 @@ public class DayNightController : MonoBehaviour
 
     [Header("夜间环境")]
     public float nightAmbientIntensity = 0.22f;
-    public Color nightAmbientColor = new Color(0.06f, 0.08f, 0.12f);
+    public Color nightAmbientColor = new Color(0.15f, 0.18f, 0.25f);
 
     [Header("月光（可选，影响全局光照）")]
     public bool enableMoonDirectionalLight = true;
@@ -97,7 +108,14 @@ public class DayNightController : MonoBehaviour
             sunLight = RenderSettings.sun;
 
         if (skyboxMaterial != null)
+        {
             RenderSettings.skybox = skyboxMaterial;
+            
+            // 初始化黄昏颜色到 Shader
+            skyboxMaterial.SetColor("_DuskTopColor", duskTopColor);
+            skyboxMaterial.SetColor("_DuskHorizonColor", duskHorizonColor);
+            skyboxMaterial.SetColor("_DuskMidColor", duskMidColor);
+        }
 
         // 未启用自动纹理生成功能（如需纹理，请在场景中添加 TextureGenerator 并手动设置天空盒）
 
@@ -232,6 +250,43 @@ public class DayNightController : MonoBehaviour
         // 根据太阳高度判断是否为夜晚
         float sunElevationDeg = Mathf.Asin(Mathf.Clamp(sunPositionDir.y, -1f, 1f)) * Mathf.Rad2Deg;
         bool isNight = sunElevationDeg < nightElevationThreshold;
+        bool isDusk = sunElevationDeg >= duskRangeAngle.x && sunElevationDeg <= duskRangeAngle.y;
+        // Debug.Log($"[DayNight] Sun Elevation: {sunElevationDeg:F2}°, isNight: {isNight}, isDusk: {isDusk}");
+        // 黄昏时分调整太阳颜色和天空盒效果
+        if (sunLight != null)
+        {
+            if (isDusk && currentTimeOfDay >= 0.25f)
+            {
+                // 计算黄昏进度（0->1）
+                float duskProgress = sunElevationDeg - duskRangeAngle.x;
+                duskProgress = Mathf.Clamp01(duskProgress / (duskRangeAngle.y - duskRangeAngle.x)); // 归一化到 0-1
+                duskProgress = 1f - duskProgress; // 反转进度
+
+
+                // 傍晚黄昏：进程 0->1 时颜色从白天渐变为橙红
+                sunLight.color = Color.Lerp(Color.white, duskColor, duskProgress);
+                
+                RenderSettings.ambientLight = sunLight.color * 0.8f; // 黄昏环境光稍暗
+                RenderSettings.fogColor = sunLight.color;
+                
+                // 更新天空盒的黄昏参数
+                skyboxMaterial.SetFloat("_DuskBlend", duskProgress);
+                
+                // 设置黄昏云层染色
+                Color duskCloudTint = new Color(1.0f, 0.7f, 0.4f);
+                duskCloudTint = Color.Lerp(duskCloudTint, sunLight.color, 0.3f);
+                skyboxMaterial.SetColor("_DuskCloudTint", duskCloudTint);
+                skyboxMaterial.SetFloat("_DuskCloudIntensity", 1.2f + duskProgress * 0.3f);
+            }
+            if(currentTimeOfDay < 0.25f || currentTimeOfDay > 0.55f)
+            {
+                // 非黄昏时恢复默认颜色
+                sunLight.color = Color.white;
+                skyboxMaterial.SetFloat("_DuskBlend", 0f);
+                skyboxMaterial.SetColor("_DuskCloudTint", Color.white);
+                skyboxMaterial.SetFloat("_DuskCloudIntensity", 1.0f);
+            }
+        }
 
         // 切换环境光
         if (isNight)
