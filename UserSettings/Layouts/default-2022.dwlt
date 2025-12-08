@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 7.3333335
-    y: 115.333336
+    x: -130.66667
+    y: 90.66667
     width: 1692
     height: 880
   m_ShowMode: 4
-  m_Title: Scene
+  m_Title: Hierarchy
   m_RootView: {fileID: 2}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -100,7 +100,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 100}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 120
+  controlID: 117
   draggingID: 0
 --- !u!114 &5
 MonoBehaviour:
@@ -147,7 +147,7 @@ MonoBehaviour:
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 16
+  controlID: 26
   draggingID: 0
 --- !u!114 &7
 MonoBehaviour:
@@ -300,8 +300,8 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 807.3334
-    y: 145.33334
+    x: 669.3334
+    y: 120.66667
     width: 269.33337
     height: 809
   m_SerializedDataModeController:
@@ -322,18 +322,18 @@ MonoBehaviour:
       m_ExpandedIDs: 04fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
-        m_Name: 
-        m_OriginalName: 
+        m_Name: daynightmanager
+        m_OriginalName: daynightmanager
         m_EditFieldRect:
           serializedVersion: 2
           x: 0
           y: 0
           width: 0
           height: 0
-        m_UserData: 0
+        m_UserData: 19710
         m_IsWaitingForDelay: 0
         m_IsRenaming: 0
-        m_OriginalEventType: 11
+        m_OriginalEventType: 0
         m_IsRenamingFilename: 0
         m_ClientGUIView: {fileID: 7}
       m_SearchString: 
@@ -364,8 +364,8 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 1321.3334
-    y: 145.33334
+    x: 1183.3334
+    y: 120.66667
     width: 377
     height: 809
   m_SerializedDataModeController:
@@ -412,8 +412,8 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 1078.6667
-    y: 145.33334
+    x: 940.6667
+    y: 120.66667
     width: 240.66663
     height: 809
   m_SerializedDataModeController:
@@ -509,7 +509,7 @@ MonoBehaviour:
   m_ListAreaState:
     m_SelectedInstanceIDs: 
     m_LastClickedInstanceID: 0
-    m_HadKeyboardFocusLastEvent: 1
+    m_HadKeyboardFocusLastEvent: 0
     m_ExpandedInstanceIDs: 
     m_RenameOverlay:
       m_UserAcceptedRename: 0
@@ -559,8 +559,8 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 7.3333335
-    y: 571.3334
+    x: -130.66667
+    y: 546.6667
     width: 799
     height: 383
   m_SerializedDataModeController:
@@ -659,8 +659,8 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: 7.3333335
-    y: 145.33334
+    x: -130.66667
+    y: 120.66667
     width: 799
     height: 405
   m_SerializedDataModeController:
@@ -1008,9 +1008,9 @@ MonoBehaviour:
   m_PlayAudio: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: -61285.723, y: -49864.836, z: -21132.17}
+    m_Target: {x: -61145.11, y: -49979.543, z: -21264.22}
     speed: 2
-    m_Value: {x: -61285.723, y: -49864.836, z: -21132.17}
+    m_Value: {x: -61145.11, y: -49979.543, z: -21264.22}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1056,13 +1056,13 @@ MonoBehaviour:
     m_GridAxis: 1
     m_gridOpacity: 0.5
   m_Rotation:
-    m_Target: {x: -0.3340603, y: -0.53059316, z: -0.23890014, w: 0.74156046}
+    m_Target: {x: -0.16694446, y: -0.12978406, z: -0.022051215, w: 0.9771999}
     speed: 2
-    m_Value: {x: -0.33255827, y: -0.5310406, z: -0.23782517, w: 0.742186}
+    m_Value: {x: -0.16679911, y: -0.13563675, z: -0.023051092, w: 0.97634494}
   m_Size:
-    m_Target: 54.50809
+    m_Target: 9.472879
     speed: 2
-    m_Value: 54.50809
+    m_Value: 9.064957
   m_Ortho:
     m_Target: 0
     speed: 2
