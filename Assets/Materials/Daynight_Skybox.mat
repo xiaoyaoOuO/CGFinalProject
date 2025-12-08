@@ -13,7 +13,8 @@ Material:
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
   - _SUNDISK_HIGH_QUALITY
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - NIGHT_MODE
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -133,7 +134,7 @@ Material:
     - _Cutoff: 0.5
     - _DayAnimIntensity: 0.06
     - _DayAnimSpeed: 0.06
-    - _DayNightBlend: 0
+    - _DayNightBlend: 1
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
     - _Exposure: 0.43000004
@@ -156,7 +157,7 @@ Material:
     - _StarScale: 0.08
     - _StarsIntensity: 0.4
     - _SunDisk: 2
-    - _SunIntensity: 0.70168406
+    - _SunIntensity: 0.05
     - _SunSize: 3
     - _SunSizeConvergence: 5
     - _UVSec: 0
@@ -170,5 +171,5 @@ Material:
     - _MoonGlowColor: {r: 0.91823894, g: 0.8441506, b: 0.7016731, a: 1}
     - _SkyTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _SunColor: {r: 0.9924528, g: 0.9924528, b: 0.9924528, a: 1}
-    - _SunDir: {r: 0, g: 0.65458155, b: -0.75599146, a: 0}
+    - _SunDir: {r: 0, g: -0.4884522, b: 0.87259066, a: 0}
   m_BuildTextureStacks: []

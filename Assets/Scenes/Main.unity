@@ -178,6 +178,8 @@ MonoBehaviour:
   moonDirectionalColor: {r: 0.92154616, g: 0.9308176, b: 0.1902614, a: 1}
   lightTransitionDuration: 2
   nightElevationThreshold: -3
+  nightBlendStartDeg: 45
+  nightBlendEndDeg: -15
   daySkyTexture: {fileID: 2800000, guid: 00bf1b0257a246a4c8798b079f3a14d5, type: 3}
   nightSkyTexture: {fileID: 2800000, guid: 8bb3ee1a66206d545869570190aefd31, type: 3}
   cloudTexture: {fileID: 2800000, guid: 897ddb7e588a68d4496190a30cd75286, type: 3}
@@ -929,6 +931,11 @@ MonoBehaviour:
   cloudNoiseMix: 0.55
   cloudLightIntensity: 0.35
   cloudBottomDarkness: 0.55
+  enableDomainWarp: 1
+  domainWarpStrength: 0.45
+  enableRotation: 0
+  rotationAngleDeg: 0
+  randomSeed: 0
   fillEdgeWithColor: 1
   edgeFillColor: {r: 1, g: 1, b: 1, a: 0}
   edgeMargin: 0.108

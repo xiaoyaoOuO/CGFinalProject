@@ -46,6 +46,10 @@ public class DayNightController : MonoBehaviour
 
     [Header("昼夜判定")]
     public float nightElevationThreshold = -6f; // 当太阳高度角低于此值（度）时视为夜晚
+    [Tooltip("开始进入夜晚的太阳高度角（度）。例如 5 表示太阳低于 5 度开始渐入夜晚")]
+    public float nightBlendStartDeg = 5f;
+    [Tooltip("完全进入夜晚的太阳高度角（度）。例如 -15 表示太阳低于 -15 度时完全为夜晚")]
+    public float nightBlendEndDeg = -15f;
 
     [Header("天空盒纹理")]
     public Texture2D daySkyTexture;
@@ -229,29 +233,22 @@ public class DayNightController : MonoBehaviour
             moonDirectional.transform.rotation = Quaternion.LookRotation(-moonDir);
         }
 
-        // 根据太阳高度判断是否为夜晚
+        // 太阳高度角（度）
         float sunElevationDeg = Mathf.Asin(Mathf.Clamp(sunPositionDir.y, -1f, 1f)) * Mathf.Rad2Deg;
-        bool isNight = sunElevationDeg < nightElevationThreshold;
+        // 平滑昼夜混合：在 nightBlendStartDeg 与 nightBlendEndDeg 之间平滑过渡
+        float rawBlend = Mathf.InverseLerp(nightBlendStartDeg, nightBlendEndDeg, sunElevationDeg);
+        float dayNightBlend = Mathf.SmoothStep(0f, 1f, rawBlend); // 0=白天, 1=夜晚
+        bool isNight = dayNightBlend >= 0.999f; // 保持布尔语义用于 Moon active 等
 
-        // 切换环境光
-        if (isNight)
-        {
-            RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = nightAmbientColor * nightAmbientIntensity;
-            RenderSettings.ambientIntensity = 1f;
-        }
-        else
-        {
-            // 恢复原始的白天设置
-            RenderSettings.ambientMode = originalAmbientMode;
-            RenderSettings.ambientLight = originalAmbientLight;
-            RenderSettings.ambientIntensity = originalAmbientIntensity;
-        }
+        // 平滑环境光：在白天/夜间之间插值，避免突变
+        RenderSettings.ambientMode = originalAmbientMode;
+        RenderSettings.ambientLight = Color.Lerp(originalAmbientLight, nightAmbientColor, dayNightBlend);
+        RenderSettings.ambientIntensity = Mathf.Lerp(originalAmbientIntensity, nightAmbientIntensity, dayNightBlend);
 
         // 平滑过渡月光强度
         if (enableMoonDirectionalLight && moonDirectional != null)
         {
-            float target = isNight ? moonDirectionalIntensity : 0f;
+            float target = moonDirectionalIntensity * dayNightBlend;
             if (lightTransitionDuration <= 0f)
                 moonDirectional.intensity = target;
             else
@@ -284,9 +281,6 @@ public class DayNightController : MonoBehaviour
             // 更新天空盒材质参数
         if (skyboxMaterial != null)
         {
-            // 根据太阳高度计算日夜混合因子（使用上面已计算的 sunElevationDeg）
-            float dayNightBlend = Mathf.Clamp01((nightElevationThreshold - sunElevationDeg) / 20f);
-            
             // 设置着色器参数
             if (daySkyTexture != null)
                 skyboxMaterial.SetTexture("_DayTex", daySkyTexture);
