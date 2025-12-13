@@ -28,9 +28,13 @@ public class Snow : MonoBehaviour {
         {
             Graphics.Blit(source, destination, white);
             backgroundset = true;
+            Debug.Log("Setting background");
             return;
         }
 
         Graphics.Blit(source, destination, blitmat);
+        //查看source
+        // Graphics.Blit(source, destination);
+        // Debug.Log("Blitting snow");
     }
 }

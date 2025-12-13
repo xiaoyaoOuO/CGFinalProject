@@ -45,15 +45,23 @@ Shader "Custom/SnowAggregation" {
 			half4 frag(v2f i) : COLOR{
 				fixed4 mtex = tex2D(_MainTex, i.uv);
 				float depthValue = Linear01Depth(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.scrPos)).r);
-				float4 d = float4(depthValue, depthValue, depthValue, depthValue);
-				float4 c = d;
-				if (d.a == 1) { //cut out background depth
-					c = mtex;
-				}
-				//delayed fading
-				if (frac(_Time.x * 50) >= .8) {
-					c += _Color;
-				}
+				float4 depthColor = float4(depthValue, depthValue, depthValue, 1);
+				//debug depth
+				// return half4(depthValue, depthValue, depthValue, 1);
+				
+				// 使用阈值而不是精确比较
+				float depthThreshold = 1;
+				float4 c = mtex;
+				
+				// 如果不是背景（有物体），根据深度添加雪
+				if (depthValue < depthThreshold) {	
+					float snowAmount = 1.0 - depthValue; // 雪量与深度成反比
+					c.rgb += _Color.rgb * snowAmount; // 根据深度添加颜色
+				}else{
+					if(frac(_Time.y) > 0.8f){
+						c.rgb += float3(1,1,1) * _Speed;
+					}
+				}	
 				return c;
 			}
 			ENDCG
