@@ -7,6 +7,12 @@ Shader"Custom/Leaves"
         _WindSpeed ("Wind Speed", Range(0, 5)) = 1.0
         _WindStrength ("Wind Strength", Range(0, 0.5)) = 0.1
         _WindFrequency ("Wind Frequency", Range(0, 10)) = 2.0
+
+        //添加雪的效果
+        _IsSnow("Is Snow", Float) = 0
+        _SnowColor("Snow Color", Color) = (1,1,1,0.8)
+        _SnowThreshold("Snow Threshold", Range(0.9,0.99)) = 0.95
+        _SnowDirection("Snow Direction", Vector) = (0,1,0,0)
     }
     SubShader
     {
@@ -29,14 +35,31 @@ float _WindFrequency;
 struct Input
 {
     float2 uv_MainTex;
+    float snowDot;
 };
 
 fixed4 _Color;
+
+float _IsSnow;
+fixed4 _SnowColor;
+float4 _SnowDirection;
+float _SnowThreshold;
+
 
         // 飘动效果函数
 void vert(inout appdata_full v, out Input o)
 {
     UNITY_INITIALIZE_OUTPUT(Input, o);
+
+    if(_IsSnow != 0)
+    {
+        // 计算法线与雪方向的点积
+        float3 normalWorld = UnityObjectToWorldNormal(v.normal);
+        float3 snowDir = normalize(_SnowDirection.xyz);
+        o.snowDot = dot(normalWorld, snowDir);
+        //如果下雪就不进行风的计算
+        return;
+    }
             
             // 获取世界空间位置
     float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
@@ -73,6 +96,10 @@ void surf(Input IN, inout SurfaceOutput o)
 {
             // Albedo comes from a texture tinted by color
     fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
+    if(_IsSnow !=0 && IN.snowDot > _SnowThreshold) // 判断是否启用积雪效果
+    {
+        c *= _SnowColor / _Color;
+    }
     o.Albedo = c.rgb;
     o.Alpha = c.a;
     clip(o.Alpha - 0.5);

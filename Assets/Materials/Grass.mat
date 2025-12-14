@@ -82,7 +82,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InteractorRadius: 1.2
+    - _InteractorRadius: 2
     - _InteractorStrength: 1
     - _MaxFadeDistance: 100
     - _Metallic: 0
