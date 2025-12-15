@@ -54,7 +54,7 @@ void vert(inout appdata_full v, out Input o)
     if(_IsSnow != 0)
     {
         // 计算法线与雪方向的点积
-        float3 normalWorld = UnityObjectToWorldNormal(v.normal);
+        float3 normalWorld = normalize(UnityObjectToWorldNormal(v.normal));
         float3 snowDir = normalize(_SnowDirection.xyz);
         o.snowDot = dot(normalWorld, snowDir);
         //如果下雪就不进行风的计算
@@ -96,9 +96,14 @@ void surf(Input IN, inout SurfaceOutput o)
 {
             // Albedo comes from a texture tinted by color
     fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
-    if(_IsSnow !=0 && IN.snowDot > _SnowThreshold) // 判断是否启用积雪效果
+    fixed4 originColor = c;
+    if(_IsSnow !=0) // 判断是否启用积雪效果
     {
         c *= _SnowColor / _Color;
+        if(IN.snowDot < _SnowThreshold)
+        {
+            c = lerp(originColor, c, IN.snowDot);
+        }
     }
     o.Albedo = c.rgb;
     o.Alpha = c.a;
