@@ -27,7 +27,6 @@ Shader "Custom/SnowAggregation" {
 				float4 pos : SV_POSITION;
 			};
 
-			//Vertex Shader
 			v2f vert(appdata_base v) {
 				v2f o;
 				o.pos = UnityObjectToClipPos(v.vertex);
@@ -39,13 +38,9 @@ Shader "Custom/SnowAggregation" {
 
 			float _Speed;
 
-			//Depth code via: http://williamchyr.com/2013/11/unity-shaders-depth-and-normal-textures/
-
-			//Fragment Shader
 			half4 frag(v2f i) : COLOR{
 				fixed4 mtex = tex2D(_MainTex, i.uv);
 				float depthValue = Linear01Depth(tex2Dproj(_CameraDepthTexture, UNITY_PROJ_COORD(i.scrPos)).r);
-				float4 depthColor = float4(depthValue, depthValue, depthValue, 1);
 				//debug depth
 				// return half4(depthValue, depthValue, depthValue, 1);
 				

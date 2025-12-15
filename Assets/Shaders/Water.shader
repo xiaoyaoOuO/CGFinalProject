@@ -242,6 +242,8 @@ Shader "Custom/Water"
                 half eyeDepth = LinearEyeDepth(UNITY_SAMPLE_DEPTH(tex2Dproj(_CameraDepthTexture,UNITY_PROJ_COORD( screenPos ))));
                 half eyeDepthSubScreenPos = abs( eyeDepth - screenPos.w );
                 half depthMask = 1-eyeDepthSubScreenPos + _FoamDepth;
+                //                 //debug 深度
+                // return half4(depthMask,depthMask,depthMask,1);
 
                 //计算泡沫
                 half3 water = tex2D(_Foam,i.uv_Tex.xy/_Foam_ST.xy);
