@@ -14,15 +14,19 @@ public class RigidbodyCharacter : MonoBehaviour
     [Header("Movement Stats")]
     public float moveSpeed = 6.0f;
     public float runBackSpeed = 4.0f; // 后退通常慢一点
-    public float jumpForce = 5.0f;
+    public float jumpForce = 100.0f;
     
     [Header("Ground Detection")]
     public LayerMask groundLayer; // 必须设置，指定哪些层是地面
+    public LayerMask snowLayer; // 雪地层
     public float groundCheckDistance = 0.2f;
+    public float groundCheckRadius = 0.3f; // 检测球半径
 
     [Header("Input")]
     public KeyCode restKey = KeyCode.R;
 
+    [Header("Interact Material")]
+    public Material interactMaterial;
     // 内部变量
     private Rigidbody _rb;
     private Animator _animator;
@@ -72,13 +76,13 @@ public class RigidbodyCharacter : MonoBehaviour
         float x = Input.GetAxisRaw("Horizontal");
         float z = Input.GetAxisRaw("Vertical");
         _input = new Vector2(x, z).normalized; // 归一化防止斜跑加速
-
         if (Input.GetButtonDown("Jump") && _isGrounded)
         {
             _jumpInput = true;
         }
+        interactMaterial.SetVector("_PositionMoving", transform.position);
 
-        // 3. 处理相机旋转 (视觉相关放Update)
+            // 3. 处理相机旋转 (视觉相关放Update)
         HandleCameraRotation();
         
         // 4. 更新动画
@@ -145,10 +149,17 @@ public class RigidbodyCharacter : MonoBehaviour
         {
             // 施加瞬间向上的力
             // 先把当前Y速度清零，保证每次跳起高度一致
+            float jumpHeight = 4f;
             _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
-            _rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            
-            _jumpInput = false; // 消耗跳跃指令
+            float gravity = Physics.gravity.y;
+            float requiredForce = Mathf.Sqrt(-2 * gravity * jumpHeight);
+
+            _rb.AddForce(Vector3.up * requiredForce, ForceMode.VelocityChange);
+
+            _jumpInput = false;
+        
+        _jumpInput = false; // 消耗跳跃指令
+
         }
     }
 
@@ -157,7 +168,23 @@ public class RigidbodyCharacter : MonoBehaviour
         // 从角色底部稍微向上一点的位置，向下发射射线检测
         Vector3 spherePos = transform.position + Vector3.up * 0.1f;
         // 使用 CheckSphere 进行球形检测，比单根射线容错率高
-        _isGrounded = Physics.CheckSphere(spherePos, groundCheckDistance, groundLayer, QueryTriggerInteraction.Ignore);
+       // _isGrounded = Physics.CheckSphere(spherePos, groundCheckDistance, groundLayer, QueryTriggerInteraction.Ignore);
+        bool rayCheck = Physics.Raycast(
+       spherePos,
+       Vector3.down,
+       groundCheckRadius + 0.1f,
+       groundLayer,
+       QueryTriggerInteraction.Ignore
+       );
+       bool snowCheck = Physics.Raycast(
+         spherePos,
+            Vector3.down,
+            groundCheckRadius + 0.1f,
+            snowLayer,
+            QueryTriggerInteraction.Ignore
+            );
+       rayCheck = rayCheck || snowCheck;
+        _isGrounded = rayCheck;
     }
 
     private void UpdateAnimator(float forwardInput)
@@ -166,7 +193,7 @@ public class RigidbodyCharacter : MonoBehaviour
         // 注意：这里用 dampened 值，或者直接传 _input.y，看你想要多快的动画响应
         // 如果用 GetAxisRaw，这里最好用 Damp
         _animator.SetFloat(_animIDSpeed, forwardInput, 0.1f, Time.deltaTime);
-        _animator.SetBool(_animIDJump, !_isGrounded);
+        _animator.SetBool(_animIDJump, _jumpInput);
     }
     
     // 调试用的，能在Scene窗口看到地面检测范围

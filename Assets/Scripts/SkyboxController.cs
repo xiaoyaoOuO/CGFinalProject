@@ -1,40 +1,29 @@
-using System;
 using UnityEngine;
 using UnityEngine.Rendering;
 
-// DayNightController£ºÌ«ÑôÓëÔÂÁÁ£¨¼ò½à°æ£©
-// - ÔÂÁÁ×ÜÊÇÎ»ÓÚÌ«ÑôµÄ¶ÔÃæ
-// - Ò¹¼ä¸ù¾İÌ«Ñô¸ß¶È½ÇÅĞ¶¨£¬ÆôÓÃÔÂÁÁÏÔÊ¾²¢ÇĞ»»»·¾³¹â
-// - Ìá¹© Inspector ²ÎÊıÓÃÓÚµ÷ÕûĞĞÎª
+// DayNightControllerï¼šå¤ªé˜³ä¸æœˆäº®ï¼ˆç®€æ´ç‰ˆï¼‰
+// - æœˆäº®æ€»æ˜¯ä½äºå¤ªé˜³çš„å¯¹é¢
+// - å¤œé—´æ ¹æ®å¤ªé˜³é«˜åº¦è§’åˆ¤å®šï¼Œå¯ç”¨æœˆäº®æ˜¾ç¤ºå¹¶åˆ‡æ¢ç¯å¢ƒå…‰
+// - æä¾› Inspector å‚æ•°ç”¨äºè°ƒæ•´è¡Œä¸º
 public class DayNightController : MonoBehaviour
 {
-    [Header("Ê±¼ä²ÎÊı")]
+    [Header("æ—¶é—´å‚æ•°")]
     public float dayDurationInSeconds = 120f;
     [Range(0f, 1f)]
     public float currentTimeOfDay = 0.25f; // 0..1
 
-    [Header("Ö÷¹âÔ´£¨Ì«Ñô£©")]
-    public Light sunLight; // ³¡¾°ÖĞµÄÌ«Ñô£¨·½Ïò¹â£©
-    public Color duskColor = new Color(1f, 0.5f, 0.2f); // »Æ»èÊ±·ÖµÄÌ«ÑôÑÕÉ«
-    //»Æ»èµÄÊ±¼ä·¶Î§(0¶Èµ½30¶È)
-    public Vector2 duskRangeAngle = new Vector2(0f, 30f);
-    public Color originalTopSkyColor;
-    public Color originalHorizonColor;
-    
-    [Header("»Æ»èĞ§¹û")]
-    public Color duskTopColor = new Color(0.8f, 0.2f, 0.1f); // Ìì¶¥Éî×Ï/ºì
-    public Color duskHorizonColor = new Color(1.0f, 0.6f, 0.3f); // µØÆ½ÏßÎÂÅ¯³Èºì
-    public Color duskMidColor = new Color(1.0f, 0.4f, 0.2f); // ÖĞ²ãÑªºìÉ«
+    [Header("ä¸»å…‰æºï¼ˆå¤ªé˜³ï¼‰")]
+    public Light sunLight; // åœºæ™¯ä¸­çš„å¤ªé˜³ï¼ˆæ–¹å‘å…‰ï¼‰
 
-    [Header("Ìì¿ÕºĞ")]
+    [Header("å¤©ç©ºç›’")]
     public Material skyboxMaterial;
 
-    [Header("ÔÂÁÁ£¨ÊÓ¾õ£©")]
+    [Header("æœˆäº®ï¼ˆè§†è§‰ï¼‰")]
     public GameObject moonPrefab;
     public Material moonMaterial;
     public float moonDistance = 50f;
     public float moonSize = 5f;
-    public float minMoonHeight = 10f; // Ïà¶ÔÓÚ½Å±¾¹ÒÔØµãµÄ×îµÍ¸ß¶È£¬±ÜÃâ³öÏÖÔÚµØÏÂ
+    public float minMoonHeight = 10f; // ç›¸å¯¹äºè„šæœ¬æŒ‚è½½ç‚¹çš„æœ€ä½é«˜åº¦ï¼Œé¿å…å‡ºç°åœ¨åœ°ä¸‹
     [Tooltip("If true, the skybox shader will draw the moon disk. The scene 'Moon' GameObject will be hidden when enabled.")]
     public bool useShaderMoon = true;
     [Header("Shader Moon Settings")]
@@ -45,35 +34,39 @@ public class DayNightController : MonoBehaviour
     public Color moonGlowColor = new Color(1f, 0.95f, 0.85f);
     public float moonGlowIntensity = 0.6f;
 
-    [Header("Ò¹¼ä»·¾³")]
+    [Header("å¤œé—´ç¯å¢ƒ")]
     public float nightAmbientIntensity = 0.22f;
-    public Color nightAmbientColor = new Color(0.15f, 0.18f, 0.25f);
+    public Color nightAmbientColor = new Color(0.06f, 0.08f, 0.12f);
 
-    [Header("ÔÂ¹â£¨¿ÉÑ¡£¬Ó°ÏìÈ«¾Ö¹âÕÕ£©")]
+    [Header("æœˆå…‰ï¼ˆå¯é€‰ï¼Œå½±å“å…¨å±€å…‰ç…§ï¼‰")]
     public bool enableMoonDirectionalLight = true;
-    public float moonDirectionalIntensity = 0.35f; // Ò¹¼ä·½Ïò¹âÇ¿¶È£¨±ÈÌ«ÑôÈõ£©
+    public float moonDirectionalIntensity = 0.35f; // å¤œé—´æ–¹å‘å…‰å¼ºåº¦ï¼ˆæ¯”å¤ªé˜³å¼±ï¼‰
     public Color moonDirectionalColor = new Color(0.85f, 0.9f, 1f);
-    public float lightTransitionDuration = 2f; // µ­Èë/µ­³ö³ÖĞøÊ±¼ä£¨Ãë£©
+    public float lightTransitionDuration = 2f; // æ·¡å…¥/æ·¡å‡ºæŒç»­æ—¶é—´ï¼ˆç§’ï¼‰
 
-    [Header("ÖçÒ¹ÅĞ¶¨")]
-    public float nightElevationThreshold = -6f; // µ±Ì«Ñô¸ß¶È½ÇµÍÓÚ´ËÖµ£¨¶È£©Ê±ÊÓÎªÒ¹Íí
+    [Header("æ˜¼å¤œåˆ¤å®š")]
+    public float nightElevationThreshold = -6f; // å½“å¤ªé˜³é«˜åº¦è§’ä½äºæ­¤å€¼ï¼ˆåº¦ï¼‰æ—¶è§†ä¸ºå¤œæ™š
+    [Tooltip("å¼€å§‹è¿›å…¥å¤œæ™šçš„å¤ªé˜³é«˜åº¦è§’ï¼ˆåº¦ï¼‰ã€‚ä¾‹å¦‚ 5 è¡¨ç¤ºå¤ªé˜³ä½äº 5 åº¦å¼€å§‹æ¸å…¥å¤œæ™š")]
+    public float nightBlendStartDeg = 5f;
+    [Tooltip("å®Œå…¨è¿›å…¥å¤œæ™šçš„å¤ªé˜³é«˜åº¦è§’ï¼ˆåº¦ï¼‰ã€‚ä¾‹å¦‚ -15 è¡¨ç¤ºå¤ªé˜³ä½äº -15 åº¦æ—¶å®Œå…¨ä¸ºå¤œæ™š")]
+    public float nightBlendEndDeg = -15f;
 
-    [Header("Ìì¿ÕºĞÎÆÀí")]
+    [Header("å¤©ç©ºç›’çº¹ç†")]
     public Texture2D daySkyTexture;
-    public Texture2D nightSkyTexture; // °üº¬ĞÇĞÇµÄÎÆÀí
+    public Texture2D nightSkyTexture; // åŒ…å«æ˜Ÿæ˜Ÿçš„çº¹ç†
     public Texture2D cloudTexture;
     public Texture2D cloudTextureNear;
     public Texture2D cloudTextureFar;
     public float cloudSpeed = 0.1f;
     public float starsIntensity = 1.5f;
     public float cloudOpacity = 0.9f;
-    // ÓÃÓÚ¿ØÖÆ shader ·Ö²ãÔÆ²ÎÊı£¨½ü/Ô¶£©
+    // ç”¨äºæ§åˆ¶ shader åˆ†å±‚äº‘å‚æ•°ï¼ˆè¿‘/è¿œï¼‰
     public float cloudNearScale = 4.0f;
     public float cloudFarScale = 1.2f;
     public float cloudNearOpacity = 1.0f;
     public float cloudFarOpacity = 0.6f;
 
-    [Header("ÔÆ²ã ÈÕ/Ò¹ µ÷Õû")]
+    [Header("äº‘å±‚ æ—¥/å¤œ è°ƒæ•´")]
     public float cloudDayDarken = 1.0f;
     public float cloudNightDarken = 0.5f;
     public float cloudDayBrightness = 1.0f;
@@ -81,25 +74,25 @@ public class DayNightController : MonoBehaviour
     public float cloudDayOpacity = 1.0f;
     public float cloudNightOpacity = 0.6f;
 
-    [Header("µ÷ÊÔ")]
+    [Header("è°ƒè¯•")]
     public bool pauseTime = false;
     public bool debugForceBrightMoon = false;
-    public bool debugMoonLightLogs = false; // ÔÚ¿ØÖÆÌ¨´òÓ¡ÔÂ¹â/Ì«Ñô×´Ì¬ÒÔ±ãÅÅ²é
+    public bool debugMoonLightLogs = false; // åœ¨æ§åˆ¶å°æ‰“å°æœˆå…‰/å¤ªé˜³çŠ¶æ€ä»¥ä¾¿æ’æŸ¥
 
 
-    // £¨ÒÑÒÆ³ıĞÇĞÇÁ£×ÓÓë×Ô¶¯ÎÆÀíÉú³É¹¦ÄÜ£¬±£³Ö¿ØÖÆÆ÷¼ò½à£©
+    // ï¼ˆå·²ç§»é™¤æ˜Ÿæ˜Ÿç²’å­ä¸è‡ªåŠ¨çº¹ç†ç”ŸæˆåŠŸèƒ½ï¼Œä¿æŒæ§åˆ¶å™¨ç®€æ´ï¼‰
 
     GameObject moonInstance;
     Light moonDirectional;
 
-    // ÓÃÓÚ»Ö¸´°×ÌìµÄ»·¾³ÉèÖÃ
+    // ç”¨äºæ¢å¤ç™½å¤©çš„ç¯å¢ƒè®¾ç½®
     Color originalAmbientLight;
     float originalAmbientIntensity;
     AmbientMode originalAmbientMode;
 
     void Start()
     {
-        // »º´æÔ­Ê¼»·¾³ÉèÖÃ
+        // ç¼“å­˜åŸå§‹ç¯å¢ƒè®¾ç½®
         originalAmbientMode = RenderSettings.ambientMode;
         originalAmbientLight = RenderSettings.ambientLight;
         originalAmbientIntensity = RenderSettings.ambientIntensity;
@@ -108,16 +101,9 @@ public class DayNightController : MonoBehaviour
             sunLight = RenderSettings.sun;
 
         if (skyboxMaterial != null)
-        {
             RenderSettings.skybox = skyboxMaterial;
-            
-            // ³õÊ¼»¯»Æ»èÑÕÉ«µ½ Shader
-            skyboxMaterial.SetColor("_DuskTopColor", duskTopColor);
-            skyboxMaterial.SetColor("_DuskHorizonColor", duskHorizonColor);
-            skyboxMaterial.SetColor("_DuskMidColor", duskMidColor);
-        }
 
-        // Î´ÆôÓÃ×Ô¶¯ÎÆÀíÉú³É¹¦ÄÜ£¨ÈçĞèÎÆÀí£¬ÇëÔÚ³¡¾°ÖĞÌí¼Ó TextureGenerator ²¢ÊÖ¶¯ÉèÖÃÌì¿ÕºĞ£©
+        // æœªå¯ç”¨è‡ªåŠ¨çº¹ç†ç”ŸæˆåŠŸèƒ½ï¼ˆå¦‚éœ€çº¹ç†ï¼Œè¯·åœ¨åœºæ™¯ä¸­æ·»åŠ  TextureGenerator å¹¶æ‰‹åŠ¨è®¾ç½®å¤©ç©ºç›’ï¼‰
 
         CreateMoon();
         SetupMoonDirectionalLight();
@@ -141,7 +127,7 @@ public class DayNightController : MonoBehaviour
         }
     }
 
-    // ÎÆÀíÉú³É¹¦ÄÜÒÑÒÆ³ı ¡ª ÈôĞèÒª¿ÉÔÚ¶ÀÁ¢×é¼şÖĞ´¦Àí²¢½«½á¹û¸³¸øÌì¿ÕºĞ
+    // çº¹ç†ç”ŸæˆåŠŸèƒ½å·²ç§»é™¤ â€” è‹¥éœ€è¦å¯åœ¨ç‹¬ç«‹ç»„ä»¶ä¸­å¤„ç†å¹¶å°†ç»“æœèµ‹ç»™å¤©ç©ºç›’
 
     void Update()
     {
@@ -181,7 +167,7 @@ public class DayNightController : MonoBehaviour
             }
             else
             {
-                // ¾¡Á¿Ê¹ÓÃ Unlit/Color ±£Ö¤ºÚÒ¹Ò²ÄÜ¿´¼û
+                // å°½é‡ä½¿ç”¨ Unlit/Color ä¿è¯é»‘å¤œä¹Ÿèƒ½çœ‹è§
                 Shader sh = Shader.Find("Unlit/Color");
                 if (sh != null)
                 {
@@ -203,127 +189,83 @@ public class DayNightController : MonoBehaviour
 
     void UpdateLightingImmediate()
     {
-        // ¼ÆËãÌ«ÑôÔÚÌì¿ÕÖĞµÄÎ»ÖÃ·½Ïò£¨´Ó³¡¾°ÖĞĞÄÖ¸ÏòÌ«Ñô£©
-        // currentTimeOfDay Ó³Éäµ½½Ç¶È£º0 -> -90deg£¨ÎçÒ¹£©£¬0.5 -> 90deg£¨ÖĞÎç£©
+        // è®¡ç®—å¤ªé˜³åœ¨å¤©ç©ºä¸­çš„ä½ç½®æ–¹å‘ï¼ˆä»åœºæ™¯ä¸­å¿ƒæŒ‡å‘å¤ªé˜³ï¼‰
+        // currentTimeOfDay æ˜ å°„åˆ°è§’åº¦ï¼š0 -> -90degï¼ˆåˆå¤œï¼‰ï¼Œ0.5 -> 90degï¼ˆä¸­åˆï¼‰
         float sunAngle = currentTimeOfDay * 360f - 90f;
-        // Ê¹ÓÃ Vector3.up ×÷Îª»ù×¼£¬Ê¹µÃ½Ç¶ÈĞı×ª¸üÖ±¹Û£¨ÈÆ X ÖáÌ§¸ß»ò½µÂä£©
+        // ä½¿ç”¨ Vector3.up ä½œä¸ºåŸºå‡†ï¼Œä½¿å¾—è§’åº¦æ—‹è½¬æ›´ç›´è§‚ï¼ˆç»• X è½´æŠ¬é«˜æˆ–é™è½ï¼‰
         Vector3 sunPositionDir = Quaternion.Euler(sunAngle, 0f, 0f) * Vector3.up;
 
         if (sunLight != null)
         {
-            // ·½Ïò¹âÓ¦µ±³¯Ïò³¡¾°ÖĞĞÄ£¨¼´´ÓÌ«ÑôÖ¸ÏòµØÃæ£©
+            // æ–¹å‘å…‰åº”å½“æœå‘åœºæ™¯ä¸­å¿ƒï¼ˆå³ä»å¤ªé˜³æŒ‡å‘åœ°é¢ï¼‰
             sunLight.transform.rotation = Quaternion.LookRotation(-sunPositionDir);
-            // ¸ù¾İÌ«Ñô¸ß¶Èµ÷ÕûÇ¿¶È£¨Ê¹ÓÃ sunPositionDir µÄ y ·ÖÁ¿£©
+            // æ ¹æ®å¤ªé˜³é«˜åº¦è°ƒæ•´å¼ºåº¦ï¼ˆä½¿ç”¨ sunPositionDir çš„ y åˆ†é‡ï¼‰
             float elevation = Mathf.Clamp01((sunPositionDir.y + 0.1f) / 1.1f);
             sunLight.intensity = Mathf.Lerp(0.05f, 1f, elevation);
         }
 
-        // ½«ÔÂÁÁ·ÅÔÚÌ«ÑôµÄ¶ÔÃæ
+        // å°†æœˆäº®æ”¾åœ¨å¤ªé˜³çš„å¯¹é¢
         Vector3 moonDir = -sunPositionDir.normalized;
         Vector3 moonPos = transform.position + moonDir * moonDistance;
         if (moonInstance != null)
         {
 
-            // ×îĞ¡¸ß¶ÈÔ¼Êø£¬·ÀÖ¹³öÏÖÔÚµØÏÂ
+            // æœ€å°é«˜åº¦çº¦æŸï¼Œé˜²æ­¢å‡ºç°åœ¨åœ°ä¸‹
             float minY = transform.position.y + minMoonHeight;
             if (moonPos.y < minY)
             {
                 moonPos.y = minY;
-                // Î¬³Ö¾àÀëµ«µ÷ÕûË®Æ½·ÖÁ¿ÒÔ±£³Ö´óÖÂ³¯Ïò
+                // ç»´æŒè·ç¦»ä½†è°ƒæ•´æ°´å¹³åˆ†é‡ä»¥ä¿æŒå¤§è‡´æœå‘
                 Vector3 toMoon = (moonPos - transform.position).normalized;
                 moonPos = transform.position + toMoon * moonDistance;
                 if (moonPos.y < minY) moonPos.y = minY;
             }
 
             moonInstance.transform.position = moonPos;
-            // ³¯Ïò³¡¾°ÖĞĞÄ£¨»ò³¯ÏòÏà»ú£©£¬Ê¹ÎÆÀí³¯Ïò¸ü×ÔÈ»
+            // æœå‘åœºæ™¯ä¸­å¿ƒï¼ˆæˆ–æœå‘ç›¸æœºï¼‰ï¼Œä½¿çº¹ç†æœå‘æ›´è‡ªç„¶
             moonInstance.transform.rotation = Quaternion.LookRotation((transform.position - moonInstance.transform.position).normalized, Vector3.up);
         }
 
-        // ¸üĞÂÔÂ¹â£¨·½Ïò¹â£©·½ÏòÓëÇ¿¶ÈÄ¿±ê
+        // æ›´æ–°æœˆå…‰ï¼ˆæ–¹å‘å…‰ï¼‰æ–¹å‘ä¸å¼ºåº¦ç›®æ ‡
         if (enableMoonDirectionalLight && moonDirectional != null)
         {
-            // ·½Ïò¹â³¯Ïò³¡¾°ÖĞĞÄ£¨´ÓÔÂÁÁÖ¸ÏòµØÃæ£©
+            // æ–¹å‘å…‰æœå‘åœºæ™¯ä¸­å¿ƒï¼ˆä»æœˆäº®æŒ‡å‘åœ°é¢ï¼‰
             moonDirectional.transform.rotation = Quaternion.LookRotation(-moonDir);
         }
 
-        // ¸ù¾İÌ«Ñô¸ß¶ÈÅĞ¶ÏÊÇ·ñÎªÒ¹Íí
+        // å¤ªé˜³é«˜åº¦è§’ï¼ˆåº¦ï¼‰
         float sunElevationDeg = Mathf.Asin(Mathf.Clamp(sunPositionDir.y, -1f, 1f)) * Mathf.Rad2Deg;
-        bool isNight = sunElevationDeg < nightElevationThreshold;
-        bool isDusk = sunElevationDeg >= duskRangeAngle.x && sunElevationDeg <= duskRangeAngle.y;
-        // Debug.Log($"[DayNight] Sun Elevation: {sunElevationDeg:F2}¡ã, isNight: {isNight}, isDusk: {isDusk}");
-        // »Æ»èÊ±·Öµ÷ÕûÌ«ÑôÑÕÉ«ºÍÌì¿ÕºĞĞ§¹û
-        if (sunLight != null)
-        {
-            if (isDusk && currentTimeOfDay >= 0.25f)
-            {
-                // ¼ÆËã»Æ»è½ø¶È£¨0->1£©
-                float duskProgress = sunElevationDeg - duskRangeAngle.x;
-                duskProgress = Mathf.Clamp01(duskProgress / (duskRangeAngle.y - duskRangeAngle.x)); // ¹éÒ»»¯µ½ 0-1
-                duskProgress = 1f - duskProgress; // ·´×ª½ø¶È
+        // å¹³æ»‘æ˜¼å¤œæ··åˆï¼šåœ¨ nightBlendStartDeg ä¸ nightBlendEndDeg ä¹‹é—´å¹³æ»‘è¿‡æ¸¡
+        float rawBlend = Mathf.InverseLerp(nightBlendStartDeg, nightBlendEndDeg, sunElevationDeg);
+        float dayNightBlend = Mathf.SmoothStep(0f, 1f, rawBlend); // 0=ç™½å¤©, 1=å¤œæ™š
+        bool isNight = dayNightBlend >= 0.999f; // ä¿æŒå¸ƒå°”è¯­ä¹‰ç”¨äº Moon active ç­‰
 
+        // å¹³æ»‘ç¯å¢ƒå…‰ï¼šåœ¨ç™½å¤©/å¤œé—´ä¹‹é—´æ’å€¼ï¼Œé¿å…çªå˜
+        RenderSettings.ambientMode = originalAmbientMode;
+        RenderSettings.ambientLight = Color.Lerp(originalAmbientLight, nightAmbientColor, dayNightBlend);
+        RenderSettings.ambientIntensity = Mathf.Lerp(originalAmbientIntensity, nightAmbientIntensity, dayNightBlend);
 
-                // °øÍí»Æ»è£º½ø³Ì 0->1 Ê±ÑÕÉ«´Ó°×Ìì½¥±äÎª³Èºì
-                sunLight.color = Color.Lerp(Color.white, duskColor, duskProgress);
-                
-                RenderSettings.ambientLight = sunLight.color * 0.8f; // »Æ»è»·¾³¹âÉÔ°µ
-                RenderSettings.fogColor = sunLight.color;
-                
-                // ¸üĞÂÌì¿ÕºĞµÄ»Æ»è²ÎÊı
-                skyboxMaterial.SetFloat("_DuskBlend", duskProgress);
-                
-                // ÉèÖÃ»Æ»èÔÆ²ãÈ¾É«
-                Color duskCloudTint = new Color(1.0f, 0.7f, 0.4f);
-                duskCloudTint = Color.Lerp(duskCloudTint, sunLight.color, 0.3f);
-                skyboxMaterial.SetColor("_DuskCloudTint", duskCloudTint);
-                skyboxMaterial.SetFloat("_DuskCloudIntensity", 1.2f + duskProgress * 0.3f);
-            }
-            if(currentTimeOfDay < 0.25f || currentTimeOfDay > 0.55f)
-            {
-                // ·Ç»Æ»èÊ±»Ö¸´Ä¬ÈÏÑÕÉ«
-                sunLight.color = Color.white;
-                skyboxMaterial.SetFloat("_DuskBlend", 0f);
-                skyboxMaterial.SetColor("_DuskCloudTint", Color.white);
-                skyboxMaterial.SetFloat("_DuskCloudIntensity", 1.0f);
-            }
-        }
-
-        // ÇĞ»»»·¾³¹â
-        if (isNight)
-        {
-            RenderSettings.ambientMode = AmbientMode.Flat;
-            RenderSettings.ambientLight = nightAmbientColor * nightAmbientIntensity;
-            RenderSettings.ambientIntensity = 1f;
-        }
-        else
-        {
-            // »Ö¸´Ô­Ê¼µÄ°×ÌìÉèÖÃ
-            RenderSettings.ambientMode = originalAmbientMode;
-            RenderSettings.ambientLight = originalAmbientLight;
-            RenderSettings.ambientIntensity = originalAmbientIntensity;
-        }
-
-        // Æ½»¬¹ı¶ÉÔÂ¹âÇ¿¶È
+        // å¹³æ»‘è¿‡æ¸¡æœˆå…‰å¼ºåº¦
         if (enableMoonDirectionalLight && moonDirectional != null)
         {
-            float target = isNight ? moonDirectionalIntensity : 0f;
+            float target = moonDirectionalIntensity * dayNightBlend;
             if (lightTransitionDuration <= 0f)
                 moonDirectional.intensity = target;
             else
                 moonDirectional.intensity = Mathf.MoveTowards(moonDirectional.intensity, target, Time.deltaTime * (Mathf.Abs(moonDirectional.intensity - target) / lightTransitionDuration));
-            // Í¬²½ÑÕÉ«£¨ÔÊĞíÊµÊ±µ÷Õû£©
+            // åŒæ­¥é¢œè‰²ï¼ˆå…è®¸å®æ—¶è°ƒæ•´ï¼‰
             moonDirectional.color = moonDirectionalColor;
         }
 
-        // ÔÂÁÁÖ»ÔÚÒ¹¼äÏÔÊ¾£¨¿ÉÓÃ debug Ç¿ÖÆÏÔÊ¾£©
+        // æœˆäº®åªåœ¨å¤œé—´æ˜¾ç¤ºï¼ˆå¯ç”¨ debug å¼ºåˆ¶æ˜¾ç¤ºï¼‰
         if (moonInstance != null)
         {
-            // Èô shader ¸ºÔğ»æÖÆÔÂÁÁ£¬ÔòÒş²Ø³¡¾°ÖĞµÄÔÂÁÁÇòÌåÒÔÃâÖØ¸´
+            // è‹¥ shader è´Ÿè´£ç»˜åˆ¶æœˆäº®ï¼Œåˆ™éšè—åœºæ™¯ä¸­çš„æœˆäº®çƒä½“ä»¥å…é‡å¤
             bool sceneMoonVisible = !useShaderMoon && (isNight || debugForceBrightMoon);
             moonInstance.SetActive(sceneMoonVisible);
         }
 
-        // ¿ÉÑ¡µÄÔËĞĞÊ±µ÷ÊÔÊä³ö£¬´òÓ¡ÔÂ¹âÓëÌ«Ñôµ±Ç°×´Ì¬
+        // å¯é€‰çš„è¿è¡Œæ—¶è°ƒè¯•è¾“å‡ºï¼Œæ‰“å°æœˆå…‰ä¸å¤ªé˜³å½“å‰çŠ¶æ€
         if (debugMoonLightLogs)
         {
             string bakeType = moonDirectional != null ? moonDirectional.lightmapBakeType.ToString() : "null";
@@ -336,13 +278,10 @@ public class DayNightController : MonoBehaviour
             Debug.Log($"[MoonDbg] moonEnabled={moonEnabled} moonIntensity={moonInt} bakeType={bakeType} moonRot={moonRot} moonPos={moonPosStr} sunDir={sunPositionDir} sunElev={sunElevationDeg:F2} isNight={isNight} sunLightInt={sunInt} moonActive={(moonInstance!=null?moonInstance.activeSelf.ToString():"null")} ");
         }
 
-            // ¸üĞÂÌì¿ÕºĞ²ÄÖÊ²ÎÊı
+            // æ›´æ–°å¤©ç©ºç›’æè´¨å‚æ•°
         if (skyboxMaterial != null)
         {
-            // ¸ù¾İÌ«Ñô¸ß¶È¼ÆËãÈÕÒ¹»ìºÏÒò×Ó£¨Ê¹ÓÃÉÏÃæÒÑ¼ÆËãµÄ sunElevationDeg£©
-            float dayNightBlend = Mathf.Clamp01((nightElevationThreshold - sunElevationDeg) / 20f);
-            
-            // ÉèÖÃ×ÅÉ«Æ÷²ÎÊı
+            // è®¾ç½®ç€è‰²å™¨å‚æ•°
             if (daySkyTexture != null)
                 skyboxMaterial.SetTexture("_DayTex", daySkyTexture);
             if (nightSkyTexture != null)
@@ -353,7 +292,7 @@ public class DayNightController : MonoBehaviour
                 skyboxMaterial.SetTexture("_CloudTexNear", cloudTextureNear);
             if (cloudTextureFar != null)
                 skyboxMaterial.SetTexture("_CloudTexFar", cloudTextureFar);
-            // ÔÂÁÁÎÆÀíÓë²ÎÊı£¨ÓÃÓÚ×ÅÉ«Æ÷ÄÚ»æÖÆÔÂÅÌ£©
+            // æœˆäº®çº¹ç†ä¸å‚æ•°ï¼ˆç”¨äºç€è‰²å™¨å†…ç»˜åˆ¶æœˆç›˜ï¼‰
             if (moonTexture != null)
                 skyboxMaterial.SetTexture("_MoonTex", moonTexture);
             skyboxMaterial.SetFloat("_MoonSize", moonSizeDeg);
@@ -370,23 +309,23 @@ public class DayNightController : MonoBehaviour
             skyboxMaterial.SetFloat("_CloudFarScale", cloudFarScale);
             skyboxMaterial.SetFloat("_CloudNearOpacity", cloudNearOpacity);
             skyboxMaterial.SetFloat("_CloudFarOpacity", cloudFarOpacity);
-            // °×Ìì/Ò¹¼äÔÆ²ÎÊı£¨·Ö±ğ´«ÈëÒÔ±ãÔÚ shader ÖĞ»ìºÏ£©
+            // ç™½å¤©/å¤œé—´äº‘å‚æ•°ï¼ˆåˆ†åˆ«ä¼ å…¥ä»¥ä¾¿åœ¨ shader ä¸­æ··åˆï¼‰
             skyboxMaterial.SetFloat("_CloudDayDarken", cloudDayDarken);
             skyboxMaterial.SetFloat("_CloudNightDarken", cloudNightDarken);
             skyboxMaterial.SetFloat("_CloudDayBrightness", cloudDayBrightness);
             skyboxMaterial.SetFloat("_CloudNightBrightness", cloudNightBrightness);
             skyboxMaterial.SetFloat("_CloudDayOpacity", cloudDayOpacity);
             skyboxMaterial.SetFloat("_CloudNightOpacity", cloudNightOpacity);
-            // ´«µİÌ«Ñô²ÎÊı¸øÌì¿ÕºĞ£¬ÒÔ±ã shader »æÖÆÌ«ÑôÅÌ
+            // ä¼ é€’å¤ªé˜³å‚æ•°ç»™å¤©ç©ºç›’ï¼Œä»¥ä¾¿ shader ç»˜åˆ¶å¤ªé˜³ç›˜
             Vector3 sunDirVec = sunPositionDir.normalized;
             skyboxMaterial.SetVector("_SunDir", new Vector4(sunDirVec.x, sunDirVec.y, sunDirVec.z, 0f));
             Color sunColor = sunLight != null ? sunLight.color : Color.white;
             skyboxMaterial.SetColor("_SunColor", sunColor);
-            // Ì«Ñô³ß´çÓëÇ¿¶È£¬¿É¸ù¾İĞèÒªÔÚ Inspector ±©Â¶Îª²ÎÊı
+            // å¤ªé˜³å°ºå¯¸ä¸å¼ºåº¦ï¼Œå¯æ ¹æ®éœ€è¦åœ¨ Inspector æš´éœ²ä¸ºå‚æ•°
             skyboxMaterial.SetFloat("_SunSize", 3.0f);
             skyboxMaterial.SetFloat("_SunIntensity", sunLight != null ? sunLight.intensity : 1.0f);
             
-            // ¶¯Ì¬¹Ø¼ü×Ö£¬ÓÃÓÚÓÅ»¯
+            // åŠ¨æ€å…³é”®å­—ï¼Œç”¨äºä¼˜åŒ–
             if (dayNightBlend > 0.5f)
                 skyboxMaterial.EnableKeyword("NIGHT_MODE");
             else
