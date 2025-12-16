@@ -80,7 +80,10 @@ public class RigidbodyCharacter : MonoBehaviour
         {
             _jumpInput = true;
         }
-        interactMaterial.SetVector("_PositionMoving", transform.position);
+        if(interactMaterial != null)
+        {
+            interactMaterial.SetVector("_PositionMoving", transform.position);
+        }
 
             // 3. 处理相机旋转 (视觉相关放Update)
         HandleCameraRotation();
