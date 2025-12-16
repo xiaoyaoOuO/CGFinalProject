@@ -106,6 +106,6 @@ Material:
     - _BottomColor: {r: 0.07371671, g: 0.4943396, b: 0.025183298, a: 1}
     - _Color: {r: 0, g: 0.5754717, b: 0.06694827, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _TopColor: {r: 0.13835254, g: 0.8415094, b: 0.061922297, a: 1}
+    - _TopColor: {r: 0.24839355, g: 0.6528301, b: 0.20570305, a: 1}
     - _WindFrequency: {r: 0.01, g: 0.01, b: 0, a: 0}
   m_BuildTextureStacks: []
