@@ -68,8 +68,8 @@ Material:
     - _BendRotationRandom: 0.2
     - _BladeCurve: 2
     - _BladeForward: 0.35
-    - _BladeHeight: 0.6
-    - _BladeHeightRandom: 2
+    - _BladeHeight: 0.5
+    - _BladeHeightRandom: 0.2
     - _BladeRandomAmount: 0.5
     - _BladeSegments: 3
     - _BladeWidth: 0.05
@@ -82,7 +82,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _InteractorRadius: 2
+    - _InteractorRadius: 1
     - _InteractorStrength: 2
     - _MaxFadeDistance: 200
     - _Metallic: 0

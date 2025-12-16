@@ -266,17 +266,17 @@ public class DayNightController : MonoBehaviour
         }
 
         // 可选的运行时调试输出，打印月光与太阳当前状态
-        if (debugMoonLightLogs)
-        {
-            string bakeType = moonDirectional != null ? moonDirectional.lightmapBakeType.ToString() : "null";
-            string moonRot = moonDirectional != null ? moonDirectional.transform.rotation.eulerAngles.ToString() : "null";
-            string moonPosStr = moonInstance != null ? moonInstance.transform.position.ToString() : "null";
-            string moonEnabled = moonDirectional != null ? moonDirectional.enabled.ToString() : "null";
-            string moonInt = moonDirectional != null ? moonDirectional.intensity.ToString() : "null";
-            string sunInt = sunLight != null ? sunLight.intensity.ToString() : "null";
+        // if (debugMoonLightLogs)
+        // {
+        //     string bakeType = moonDirectional != null ? moonDirectional.lightmapBakeType.ToString() : "null";
+        //     string moonRot = moonDirectional != null ? moonDirectional.transform.rotation.eulerAngles.ToString() : "null";
+        //     string moonPosStr = moonInstance != null ? moonInstance.transform.position.ToString() : "null";
+        //     string moonEnabled = moonDirectional != null ? moonDirectional.enabled.ToString() : "null";
+        //     string moonInt = moonDirectional != null ? moonDirectional.intensity.ToString() : "null";
+        //     string sunInt = sunLight != null ? sunLight.intensity.ToString() : "null";
 
-            Debug.Log($"[MoonDbg] moonEnabled={moonEnabled} moonIntensity={moonInt} bakeType={bakeType} moonRot={moonRot} moonPos={moonPosStr} sunDir={sunPositionDir} sunElev={sunElevationDeg:F2} isNight={isNight} sunLightInt={sunInt} moonActive={(moonInstance!=null?moonInstance.activeSelf.ToString():"null")} ");
-        }
+        //     Debug.Log($"[MoonDbg] moonEnabled={moonEnabled} moonIntensity={moonInt} bakeType={bakeType} moonRot={moonRot} moonPos={moonPosStr} sunDir={sunPositionDir} sunElev={sunElevationDeg:F2} isNight={isNight} sunLightInt={sunInt} moonActive={(moonInstance!=null?moonInstance.activeSelf.ToString():"null")} ");
+        // }
 
             // 更新天空盒材质参数
         if (skyboxMaterial != null)

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ArrayOfTypeDate xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <TypeDate>
+    <guid>7c15405ea4355a64db9623f82fbac83c</guid>
+    <fileName>Assets/Scripts/CameraController.cs</fileName>
+    <timeStamp>2025-12-15T02:34:07+08:00</timeStamp>
+    <typeFullName>
+      <string>CameraController</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>6b55176939881b540a8dd9213638e9ce</guid>
+    <fileName>Assets/Scripts/Interact.cs</fileName>
+    <timeStamp>2025-12-16T10:41:06.8655181+08:00</timeStamp>
+    <typeFullName>
+      <string>Interact</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>18c1af9b8fd4d6c439cc41acc8030ea4</guid>
+    <fileName>Assets/Scripts/InteractWithCamera.cs</fileName>
+    <timeStamp>2025-12-16T10:41:06.8665177+08:00</timeStamp>
+    <typeFullName>
+      <string>InteractWithCamera</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>bf5bc53947bdf8c4db6d44e3a295c757</guid>
+    <fileName>Assets/Scripts/InteractWithSnowOrSand.cs</fileName>
+    <timeStamp>2025-12-10T18:02:34.7368168+08:00</timeStamp>
+    <typeFullName>
+      <string>StepGenerator</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>5780184933e8d9043817f6cf0f86beb9</guid>
+    <fileName>Assets/Scripts/MeshEditor.cs</fileName>
+    <timeStamp>2025-12-15T02:34:07+08:00</timeStamp>
+    <typeFullName>
+      <string>CircleMeshCreator</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>67951814a3d2202499db3ef6c1c1b731</guid>
+    <fileName>Assets/Scripts/RandomSpawner.cs</fileName>
+    <timeStamp>2025-12-15T02:34:07+08:00</timeStamp>
+    <typeFullName>
+      <string>RandomSpawner</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>31eed4f263d2cdd4998a8401cb653979</guid>
+    <fileName>Assets/Scripts/ReflectionCamera.cs</fileName>
+    <timeStamp>2025-12-15T14:43:34.9816861+08:00</timeStamp>
+    <typeFullName>
+      <string>ImageWidth</string>
+      <string>NewBehaviourScript</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>ecef08214dea87f43a72757008fb6ed9</guid>
+    <fileName>Assets/Scripts/SceneManager.cs</fileName>
+    <timeStamp>2025-12-15T20:10:56.9064206+08:00</timeStamp>
+    <typeFullName>
+      <string>SceneManager</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>cc7b7b72442a1aa4688435b921293444</guid>
+    <fileName>Assets/Scripts/SkyboxController.cs</fileName>
+    <timeStamp>2025-12-16T20:22:01.251526+08:00</timeStamp>
+    <typeFullName>
+      <string>DayNightController</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>df2e21ab10aeb0543b00dda920b78fdc</guid>
+    <fileName>Assets/Scripts/SnowCamera.cs</fileName>
+    <timeStamp>2025-12-13T16:02:21.2000284+08:00</timeStamp>
+    <typeFullName>
+      <string>Snow</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>dd0c5facd46f7da44a4f65a32ca87926</guid>
+    <fileName>Assets/Scripts/TextureGenerator.cs</fileName>
+    <timeStamp>2025-12-06T15:29:50.7970664+08:00</timeStamp>
+    <typeFullName>
+      <string>TextureGenerator</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>842f43ac94b4b4f72ac0898650ddcc44</guid>
+    <fileName>Assets/Cleaner/Editor/AssetCollector.cs</fileName>
+    <timeStamp>2015-12-10T02:51:26+08:00</timeStamp>
+    <typeFullName>
+      <string>AssetClean.AssetCollector</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>805140a4856714e288ea84985d3023df</guid>
+    <fileName>Assets/Cleaner/Editor/AssetReferenceCollection.cs</fileName>
+    <timeStamp>2015-12-10T02:51:26+08:00</timeStamp>
+    <typeFullName>
+      <string>AssetReferenceCollection</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>202c278a17939b24c8b79c0ee1f94d8f</guid>
+    <fileName>Assets/Cleaner/Editor/ClassReferenceCollection.cs</fileName>
+    <timeStamp>2025-12-16T22:27:15.2960319+08:00</timeStamp>
+    <typeFullName>
+      <string>AssetClean.ClassReferenceCollection</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>0d05386265df34bac8d0b6df44aa494c</guid>
+    <fileName>Assets/Cleaner/Editor/CollectionData.cs</fileName>
+    <timeStamp>2015-12-10T02:51:26+08:00</timeStamp>
+    <typeFullName>
+      <string>CollectionData</string>
+      <string>TypeDate</string>
+      <string>IReferenceCollection</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>74eec3bfba0594259ac2843353c082a3</guid>
+    <fileName>Assets/Cleaner/Editor/FindUnusedAssetsWindow.cs</fileName>
+    <timeStamp>2015-12-10T02:51:26+08:00</timeStamp>
+    <typeFullName>
+      <string>AssetClean.FindUnusedAssetsWindow</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>2c4f01a79a77a45a9a84004cc2b78098</guid>
+    <fileName>Assets/Cleaner/Editor/ShaderReferenceCollection.cs</fileName>
+    <timeStamp>2015-12-10T02:51:26+08:00</timeStamp>
+    <typeFullName>
+      <string>AssetClean.ShaderReferenceCollection</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>9d5e3c224ee98f749a564601200f99eb</guid>
+    <fileName>Assets/Scripts/Character/CharacterController.cs</fileName>
+    <timeStamp>2025-12-16T20:33:48.3930336+08:00</timeStamp>
+    <typeFullName>
+      <string>RigidbodyCharacter</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>12ec17992da8868439a50d4b342b7cfd</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Editor/CreateLocatorHere.cs</fileName>
+    <timeStamp>2020-06-12T22:33:45+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.CreateLocatorHere</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp-Editor, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>0a6149a22cf8a47a192a60b00b3becb3</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/AutoBlink.cs</fileName>
+    <timeStamp>2020-06-12T22:33:37+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.AutoBlink</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>bd026706e81db0440add962177d87b23</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/CameraController.cs</fileName>
+    <timeStamp>2020-06-12T22:37:06+08:00</timeStamp>
+    <typeFullName>
+      <string>CameraController</string>
+      <string>UnityChan.MouseButtonDown</string>
+      <string>UnityChan.CameraController</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>5e658bfc1e524494b9e54a1c92d8c1e0</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/FaceUpdate.cs</fileName>
+    <timeStamp>2020-06-12T22:35:10+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.FaceUpdate</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>058a2736f2afd564eae55007a87eed87</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/IdleChanger.cs</fileName>
+    <timeStamp>2020-06-12T22:33:31+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.IdleChanger</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>16931e3bbabb00f478bbbe4759af8343</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/IKCtrlRightHand.cs</fileName>
+    <timeStamp>2020-06-12T22:33:51+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.IKCtrlRightHand</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>a38e39ada51aaba4db6d352ce218849e</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/RandomWind.cs</fileName>
+    <timeStamp>2020-06-12T22:36:43+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.RandomWind</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>37b7c58dc2d739b4c90fe59f6875debf</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/SpringBone.cs</fileName>
+    <timeStamp>2020-06-12T22:34:27+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.SpringBone</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>fcb73b690c023734fb267911061a15c6</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/SpringCollider.cs</fileName>
+    <timeStamp>2020-06-12T22:38:34+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.SpringCollider</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>6514ba86f976d724ab63844a6015b2aa</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/SpringManager.cs</fileName>
+    <timeStamp>2020-06-12T22:35:20+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.SpringManager</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>bd9604897707c4879978b864a8be4d39</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/ThirdPersonCamera.cs</fileName>
+    <timeStamp>2020-06-12T22:37:06+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.ThirdPersonCamera</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>9001bcbd91e76437cb0f52f12764f2f0</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/Scripts/UnityChanControlScriptWithRgidBody.cs</fileName>
+    <timeStamp>2020-06-12T22:36:19+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.UnityChanControlScriptWithRgidBody</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+  <TypeDate>
+    <guid>0e2c8af82d98445fd8434457bdfc49db</guid>
+    <fileName>Assets/unity-chan!/Unity-chan! Model/SplashScreen/Scripts/SplashScreen.cs</fileName>
+    <timeStamp>2020-06-12T22:33:41+08:00</timeStamp>
+    <typeFullName>
+      <string>UnityChan.SplashScreen</string>
+    </typeFullName>
+    <assemblly>Assembly-CSharp, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null</assemblly>
+  </TypeDate>
+</ArrayOfTypeDate>

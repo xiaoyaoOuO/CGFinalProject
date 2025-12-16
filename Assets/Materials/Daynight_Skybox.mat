@@ -158,7 +158,7 @@ Material:
     - _StarScale: 0.08
     - _StarsIntensity: 0.5
     - _SunDisk: 2
-    - _SunIntensity: 0.99338806
+    - _SunIntensity: 0.33925554
     - _SunSize: 3
     - _SunSizeConvergence: 5
     - _UVSec: 0
@@ -175,6 +175,6 @@ Material:
     - _GroundColor: {r: 0.36899996, g: 0.34899998, b: 0.34099993, a: 1}
     - _MoonGlowColor: {r: 1, g: 0.95, b: 0.85, a: 1}
     - _SkyTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
-    - _SunColor: {r: 1, g: 1, b: 1, a: 1}
-    - _SunDir: {r: 0, g: 0.99234414, b: 0.12350337, a: 0}
+    - _SunColor: {r: 0.9924528, g: 0.9924528, b: 0.9924528, a: 1}
+    - _SunDir: {r: 0, g: 0.23492748, b: 0.9720129, a: 0}
   m_BuildTextureStacks: []
