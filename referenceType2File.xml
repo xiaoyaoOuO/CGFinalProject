@@ -76,7 +76,7 @@
   <TypeDate>
     <guid>cc7b7b72442a1aa4688435b921293444</guid>
     <fileName>Assets/Scripts/SkyboxController.cs</fileName>
-    <timeStamp>2025-12-16T20:22:01.251526+08:00</timeStamp>
+    <timeStamp>2025-12-17T09:32:52.9744338+08:00</timeStamp>
     <typeFullName>
       <string>DayNightController</string>
     </typeFullName>
@@ -159,7 +159,7 @@
   <TypeDate>
     <guid>9d5e3c224ee98f749a564601200f99eb</guid>
     <fileName>Assets/Scripts/Character/CharacterController.cs</fileName>
-    <timeStamp>2025-12-16T20:33:48.3930336+08:00</timeStamp>
+    <timeStamp>2025-12-17T00:07:22.3574724+08:00</timeStamp>
     <typeFullName>
       <string>RigidbodyCharacter</string>
     </typeFullName>
