@@ -152,7 +152,7 @@ public class RigidbodyCharacter : MonoBehaviour
         {
             // 施加瞬间向上的力
             // 先把当前Y速度清零，保证每次跳起高度一致
-            float jumpHeight = 4f;
+            float jumpHeight = 2.0f;
             _rb.velocity = new Vector3(_rb.velocity.x, 0, _rb.velocity.z);
             float gravity = Physics.gravity.y;
             float requiredForce = Mathf.Sqrt(-2 * gravity * jumpHeight);

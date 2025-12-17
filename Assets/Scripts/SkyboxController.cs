@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
 
@@ -17,6 +18,7 @@ public class DayNightController : MonoBehaviour
 
     [Header("天空盒")]
     public Material skyboxMaterial;
+    public List<Material> alternateSkyboxMaterials; // 可选备用天空盒材质列表
 
     [Header("月亮（视觉）")]
     public GameObject moonPrefab;
@@ -239,6 +241,16 @@ public class DayNightController : MonoBehaviour
         float rawBlend = Mathf.InverseLerp(nightBlendStartDeg, nightBlendEndDeg, sunElevationDeg);
         float dayNightBlend = Mathf.SmoothStep(0f, 1f, rawBlend); // 0=白天, 1=夜晚
         bool isNight = dayNightBlend >= 0.999f; // 保持布尔语义用于 Moon active 等
+        // if (currentTimeOfDay>=0.1f && currentTimeOfDay <=0.45f)
+        // {
+        //     RenderSettings.skybox = alternateSkyboxMaterials[0];
+        //     skyboxMaterial = alternateSkyboxMaterials[0];
+        // }
+        // else
+        // {
+        //     RenderSettings.skybox = alternateSkyboxMaterials[1];
+        //     skyboxMaterial = alternateSkyboxMaterials[1];
+        // }
 
         // 平滑环境光：在白天/夜间之间插值，避免突变
         RenderSettings.ambientMode = originalAmbientMode;
@@ -279,7 +291,7 @@ public class DayNightController : MonoBehaviour
         // }
 
             // 更新天空盒材质参数
-        if (skyboxMaterial != null)
+        if (skyboxMaterial != null && skyboxMaterial == alternateSkyboxMaterials[1])
         {
             // 设置着色器参数
             if (daySkyTexture != null)
