@@ -174,20 +174,27 @@ public class RigidbodyCharacter : MonoBehaviour
         // 使用 CheckSphere 进行球形检测，比单根射线容错率高
        // _isGrounded = Physics.CheckSphere(spherePos, groundCheckDistance, groundLayer, QueryTriggerInteraction.Ignore);
         bool rayCheck = Physics.Raycast(
-       spherePos,
-       Vector3.down,
-       groundCheckRadius + 0.1f,
-       groundLayer,
-       QueryTriggerInteraction.Ignore
-       );
-       bool snowCheck = Physics.Raycast(
-         spherePos,
+            spherePos,
+            Vector3.down,
+            groundCheckRadius + 0.1f,
+            groundLayer,
+            QueryTriggerInteraction.Ignore
+        );
+        bool snowCheck = Physics.Raycast(
+            spherePos,
             Vector3.down,
             groundCheckRadius + 0.1f,
             snowLayer,
             QueryTriggerInteraction.Ignore
-            );
-       rayCheck = rayCheck || snowCheck;
+        );
+        bool defaultCheck = Physics.Raycast(
+            spherePos,
+            Vector3.down,
+            groundCheckRadius + 0.1f,
+            defaultLayer,
+            QueryTriggerInteraction.Ignore
+        );
+        rayCheck = rayCheck || snowCheck || defaultCheck;
         _isGrounded = rayCheck;
     }
 
