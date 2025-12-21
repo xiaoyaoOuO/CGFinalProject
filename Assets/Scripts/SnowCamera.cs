@@ -12,9 +12,6 @@ public class Snow : MonoBehaviour {
 	void Start () {
         cam = GetComponent<Camera>();
         cam.depthTextureMode = DepthTextureMode.Depth;
-
-        //scale ortho camera with snow plane assuming it's 1:1
-        cam.orthographicSize *= snowPlane.transform.localScale.x; 
     }
 
     bool backgroundset = false;

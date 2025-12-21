@@ -19,6 +19,7 @@ public class RigidbodyCharacter : MonoBehaviour
     [Header("Ground Detection")]
     public LayerMask groundLayer; // 必须设置，指定哪些层是地面
     public LayerMask snowLayer; // 雪地层
+    public LayerMask defaultLayer; // 默认层
     public float groundCheckDistance = 0.2f;
     public float groundCheckRadius = 0.3f; // 检测球半径
 

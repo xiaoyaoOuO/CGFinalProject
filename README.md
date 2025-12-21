@@ -2,17 +2,17 @@
 
 版本：Unity 2022..3.46f1c1
 
-主要场景：
+**主要场景：**
 
-- Assets/Scenes/Finally Scene
+Assets/Scenes/Finally Scene
+
+**默认的场景**
 
 ![image-20251216233145851](README/image-20251216233145851.png)
 
-- Assets/Scenes/Snow Scene（目前实现了基本的雪场景，后续将其融入FinalScene中）
+**按2切换为雪景**
 
-![image-20251216233406289](README/image-20251216233406289.png)	
-
-
+<img src="README/image-20251221155725080.png" alt="image-20251221155725080" style="zoom:67%;" />
 
 ## 实现内容
 
@@ -124,6 +124,39 @@
 ![image-20251216235335817](README/image-20251216235335817.png)
 
 
+
+### 雪地Version2
+
+​	上面这个方案对精度要求比较高，在大地图上很容易会因为精度问题导致失效。于是为了将雪景融入final，我换了另一种方式。仅仅通过修改法线，影响光照着色来凸显下凹的视觉效果。
+
+- **玩家/角色脚本每帧更新位置**
+  - 见 `InteractWithSnowOrSand.cs`
+  - `Update()` 里先做：`Shader.SetGlobalVector("_PlayerPos", transform.position);`
+  - 然后计算位移：`_DeltaPos = transform.position - LastPlayerPos`（只要位移足够大才更新）
+- **用 StepGenerator 把“脚印”写进一张 RT（脚印缓存纹理）**
+  - 仍在 `InteractWithSnowOrSand.cs`
+  - 通过双缓冲（ping-pong）避免读写同一张 RT：
+    - `Graphics.Blit(StepRT, mTmpRT);` 复制历史结果
+    - `Graphics.Blit(mTmpRT, StepRT, StepMat, 0);` 用 StepMat 的 Pass0（Trace Generation）把新结果写回 StepRT
+- **平移旧脚印 + 新脚印**
+  - 见 `StepGenerator.shader`
+  - 旧脚印跟随玩家位移做 UV 偏移：`tex2D(_MainTex, uv + _DeltaPos.xz * 0.015)`
+    - 目的是让脚印“留在世界里”，玩家走动时历史纹理相对移动
+  - 新脚印来自 `_StepBump`（印章贴图），在纹理中心缩放采样并和历史结果融合
+    - 用 alpha 控制覆盖：只在新印章更“强”时才叠上去
+- **Init Pass 用来清空/初始化 RT**
+  - 见 `StepGenerator.shader`
+  - 输出固定值 `float4(0.5, 0.5, 1, 0)`（平坦法线 + 无脚印遮罩）
+- **雪地渲染时读取 StepRT，当作脚印法线+遮罩**
+  - 见 `SnowWithStep.shader`
+  - 用世界坐标差值采样脚印 RT：
+    - `stepUV = (worldPos.xz - _PlayerPos.xz) * _StepUVScale + 0.5`
+  - `stepNormalCol.rgb` 当法线扰动，`stepNormalCol.a` 当脚印遮罩 `stepMask`
+  - `stepMask` 用来：
+    - 加强法线（让凹凸更明显）
+    - 轻微压暗雪色（让脚印轮廓更清晰）
+
+![image-20251221161649393](README/image-20251221161649393.png)
 
 
 
