@@ -63,6 +63,7 @@
 		[Header(Day Sky Settings)]
 		_DayTopColor("Day Top Color", Color) = (0.4,1,1,1)
 		_DayBottomColor("Day Bottom Color", Color) = (0,0.8,1,1)
+		_DayBrightness("Day Brightness", Range(0, 5)) = 1.5
 
 		[Header(Night Sky Settings)]
 		_NightTopColor("Night Top Color", Color) = (0.4,1,1,1)
@@ -119,6 +120,7 @@
 				float4 _HorizonLightNight, _HorizonLightDay, _HorizonColorDay, _HorizonColorNight, _SunSet, _SunColor, _MoonColor;
 				float4 _CloudColorDayMain, _CloudColorDaySec, _CloudColorNightMain, _CloudColorNightSec;
 				float _HorizonBrightness, _MidLightIntensity, _CloudBrightnessDay, _CloudBrightnessNight, _Fuzziness, _FuzzinessSec, _DistortionSpeed, _CloudNoiseSpeed, _CloudNoiseScale, _DistortScale, _StarsCutoff, _StarsSpeed, _CloudCutoff, _CloudSpeed, _HorizonHeight, _HorizonIntensity, _CloudScale, _StarScale;
+				float _DayBrightness;
 				sampler2D _Stars, _CloudNoise, _Cloud, _DistortTex;
 
 				v2f vert(appdata v)
@@ -192,11 +194,15 @@
 					+ (_HorizonColorNight + midline * _HorizonLightNight) * saturate(-_WorldSpaceLightPos0.y * 10)) * _HorizonBrightness;
 
 				//combine all effects
+				float dayFactor = saturate(_WorldSpaceLightPos0.y);
+				float dayBrightness = lerp(1.0, _DayBrightness, dayFactor);
+
 				float3 combined = horizon * _addHorizon 
 					+ stars * _addStar * _StarsSkyColor 
 					+ skyGradients * _addGradient 
 					+ SunAndMoon * addSunandMoon
 					+ finalcloud * _addCloud;
+				combined *= dayBrightness;
 
 			    return float4(combined,1);
 		    }
