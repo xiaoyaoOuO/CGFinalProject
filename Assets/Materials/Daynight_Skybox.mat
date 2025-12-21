@@ -177,5 +177,5 @@ Material:
     - _MoonGlowColor: {r: 1, g: 0.95, b: 0.85, a: 1}
     - _SkyTint: {r: 0.5, g: 0.5, b: 0.5, a: 1}
     - _SunColor: {r: 0.9924528, g: 0.9924528, b: 0.9924528, a: 1}
-    - _SunDir: {r: 0, g: -0.5639053, b: 0.82583946, a: 0}
+    - _SunDir: {r: 0, g: -0.79725033, b: -0.60364884, a: 0}
   m_BuildTextureStacks: []

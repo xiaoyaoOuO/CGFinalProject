@@ -1629,8 +1629,38 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1030839952856149040, guid: 8605b2fb525033e4aac59c1e8663d7d2,
         type: 3}
+      propertyPath: jumpForce
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030839952856149040, guid: 8605b2fb525033e4aac59c1e8663d7d2,
+        type: 3}
+      propertyPath: moveSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030839952856149040, guid: 8605b2fb525033e4aac59c1e8663d7d2,
+        type: 3}
+      propertyPath: runBackSpeed
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1030839952856149040, guid: 8605b2fb525033e4aac59c1e8663d7d2,
+        type: 3}
       propertyPath: snowLayer.m_Bits
       value: 512
+      objectReference: {fileID: 0}
+    - target: {fileID: 2289199816281107845, guid: 8605b2fb525033e4aac59c1e8663d7d2,
+        type: 3}
+      propertyPath: m_Drag
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2289199816281107845, guid: 8605b2fb525033e4aac59c1e8663d7d2,
+        type: 3}
+      propertyPath: m_Mass
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 2289199816281107845, guid: 8605b2fb525033e4aac59c1e8663d7d2,
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7328981425873084669, guid: 8605b2fb525033e4aac59c1e8663d7d2,
         type: 3}
@@ -1901,7 +1931,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!81 &1645431374
 AudioListener:
   m_ObjectHideFlags: 0
@@ -2602,7 +2632,7 @@ Transform:
   m_GameObject: {fileID: 8050668963337642482}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 74.2, y: 43.1, z: 87.8}
+  m_LocalPosition: {x: -24.1, y: 6.9, z: 54.13}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3495,7 +3525,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 200, y: 200, z: 1}
+    m_Scale: {x: 20, y: 50, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0

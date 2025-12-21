@@ -1,4 +1,4 @@
-Shader "Custom/SnowExample" 
+Shader "Custom/Snow" 
 {
 	Properties
 	{
