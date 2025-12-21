@@ -126,6 +126,6 @@ Material:
     - _ZWrite: 1
     m_Colors:
     - _Bend_Direction: {r: 4, g: 4, b: 0, a: 0}
-    - _Color: {r: 0.18431327, g: 0.4274505, b: 0.086274095, a: 1}
+    - _Color: {r: 0.18431324, g: 0.42745048, b: 0.086274065, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
